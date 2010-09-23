@@ -35,7 +35,10 @@ import "java.awt.Color"
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 60))
       # every 20 seconds or so, eh?
-      g.drawString(Stats[(Time.now/3).to_i % Stats.length], 250, 100)
+      Time.now/3
+      idx = (Time.now.to_i/3) % Stats.length
+      p idx
+      g.drawString(Stats[idx], 250, 100)
       g.dispose
       image
     end
