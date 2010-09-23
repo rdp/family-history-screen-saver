@@ -34,7 +34,8 @@ import "java.awt.Color"
       # now the text
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 60))
-      g.drawString(Stats[Time.now.to_i % Stats.length], 250, 100)
+      # every 20 seconds or so, eh?
+      g.drawString(Stats[(Time.now/3).to_i % Stats.length], 250, 100)
       g.dispose
       image
     end
