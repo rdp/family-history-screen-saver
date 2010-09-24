@@ -19,7 +19,7 @@ import "java.awt.Color"
     include java.awt.event.ActionListener
     
     def initialize
-      @img= java.awt.Toolkit.getDefaultToolkit().getImage("c:/dev/ruby/johnpack1.jpg")      
+      @img= java.awt.Toolkit.getDefaultToolkit().getImage("johnpack1.jpg")      
       @timer = nil
       @start = Time.now
     end
