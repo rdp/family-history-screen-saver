@@ -1,20 +1,14 @@
 require'java'
-def dbg
-  require 'rubygems'
-  require 'ruby-debug'
-  debugger
-end
-
-alias _dbg dbg
 
 module M
-include_package "javax.swing"
-import "java.awt.image.BufferedImage" # odd
-include_package "javax.awt"
-include_package "javax.net"
-import "java.awt.Font"
-import "java.awt.Color"
-
+  include_package "javax.swing"
+  include_package "java.awt"
+  include_package "java.awt.image" # BufferedImage
+  include_package "javax.awt"
+  include_package "javax.net"
+  BufferedImage # boo http://jira.codehaus.org/browse/JRUBY-5107
+  Font
+  Color
   class ShowImage < JFrame
     include java.awt.event.ActionListener
     
@@ -73,6 +67,15 @@ import "java.awt.Color"
   end
   
 end
+
+def dbg
+  require 'rubygems'
+  require 'ruby-debug'
+  debugger
+end
+
+alias _dbg dbg
+
 
 frame = M::ShowImage.new
 frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
