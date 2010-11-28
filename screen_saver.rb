@@ -9,16 +9,18 @@ module M
   BufferedImage # boo http://jira.codehaus.org/browse/JRUBY-5107
   Font
   Color
+  
   class ShowImage < JFrame
     include java.awt.event.ActionListener
     
     def initialize
+      super
       @img= java.awt.Toolkit.getDefaultToolkit().getImage("johnpack1.jpg")      
       @timer = nil
       @start = Time.now
     end
 
-    Stats = ["John Pack", "Born 1809", "New Brunswick Canada"]
+    Stats = ["John Pack", "Born 1809", "Born New Brunswick Canada", "Your Great Grand Father"]
 
     def get_image
       image = BufferedImage.new(1000, 300, BufferedImage::TYPE_INT_RGB);
@@ -42,9 +44,7 @@ module M
     end
     
     def paint(g)
-    
       # it wants to float "smoothly" across the screen
-      
       ratio = width.to_f/height
       
       new_width = (Time.now.to_f*35) % (width)
@@ -59,11 +59,10 @@ module M
       end
     end
     
-     def actionPerformed(e)
+    def actionPerformed(e)
        # timer fired
        self.repaint
-     end
-    
+    end
   end
   
 end
@@ -75,7 +74,6 @@ def dbg
 end
 
 alias _dbg dbg
-
 
 frame = M::ShowImage.new
 frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
