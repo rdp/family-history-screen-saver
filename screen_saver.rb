@@ -1,4 +1,13 @@
 require'java'
+require 'flickr_photo'
+
+    def download full_url, to_here
+      require 'open-uri'
+      writeOut = open(to_here, "wb")
+      writeOut.write(open(full_url).read)
+      writeOut.close
+    end
+
 
 module M
   include_package "javax.swing"
@@ -15,9 +24,20 @@ module M
     
     def initialize
       super
-      @img= java.awt.Toolkit.getDefaultToolkit().getImage("johnpack1.jpg")      
       @timer = nil
       @start = Time.now
+      pick_new_image
+      @switch_image_timer = javax.swing.Timer.new(0.02*1000, nil)
+      @switch_image_timer.start
+    end
+
+    def pick_new_image
+      @img= java.awt.Toolkit.getDefaultToolkit().getImage("johnpack1.jpg")      
+      hash = FlickrPhoto.get_photo_hash_with_url_and_title
+      p hash[:title]
+      download(hash[:url], 'temp.jpg')
+      @img=java.awt.Toolkit.getDefaultToolkit().getImage("temp.jpg")      
+      @image_title = hash[:title]
     end
 
     Stats = ["John Pack", "Born 1809", "Born New Brunswick Canada", "Your Great Grand Father"]
@@ -36,17 +56,17 @@ module M
       idx = (Time.now.to_i/3) % Stats.length
       if Time.now - @start < 5
         idx = 0
-        # always start at the beginning
+        # force beginning 0 if we're at the start of a run
       end
-      g.drawString(Stats[idx], 250, 100)
+      g.drawString(@image_title, 10, 30)
+      g.drawString(Stats[idx], @img.width + 10, 100)
       g.dispose
       image
     end
     
     def paint(g)
-      # it wants to float "smoothly" across the screen
+      # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height
-      
       new_width = (Time.now.to_f*35) % (width)
       ratio*new_height = height - (Time.now.to_f*35) % (height)
       g.translate(new_width, new_height)

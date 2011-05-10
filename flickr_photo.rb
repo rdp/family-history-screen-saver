@@ -40,22 +40,18 @@ class FlickrPhoto
    # requires min_taken_date or it will just give the past 12 hours...
     args[:min_taken_date] = '1890-01-01 00:00:00'
    if rand(2) == 0  # random
+     title = 'neighbors'
      args[:max_taken_date] = '1910-01-01 00:00:00'
    else
+    title = 'new brunswick landscape'
     args[:text] = 'landscape'
    end
 
     info = flickr.photos.search args
     p info.to_a.length
     title = info[0]['title']
-    #p info[0]   
-    info.each{|i|
-      url = FlickRaw.url i
-      puts url
-      system("start #{url}") if ARGV.index('--go')
-    }
     outgoing = info.sample
-    return {:url => FlickRaw.url(outgoing), :title => outgoing['title']}
+    return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
  end 
 
 end
