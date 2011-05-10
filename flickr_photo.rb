@@ -1,28 +1,22 @@
  #   flickr.photos.search
+
  require 'rubygems'
  require 'flickraw'
 
+module Enumerable
+  def sample
+   me = to_a
+   me[rand(me.length)]
+  end
+end
+
+class FlickrPhoto
+
+  def self.get_photo_hash_with_url_and_title
+
+
  FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
  FlickRaw.shared_secret="36f9a0945ec82822"
-
- list   = flickr.photos.getRecent
-
- id     = list[0].id
- secret = list[0].secret
-=begin
- info = flickr.photos.getInfo :photo_id => id, :secret => secret
-
- p info.title           # => "PICT986"
- p info.dates.taken     # => "2006-07-06 15:16:18"
-
- sizes = flickr.photos.getSizes :photo_id => id
- p sizes
- original = sizes.find {|s| s.label == 'Original' }
- # p original       # => "800"
-
-=end
-
-    p 'begin new'
 
     new_b = flickr.places.find :query => "new brunswick" # happiness!
     latitude = new_b[0]['latitude'].to_f
@@ -43,16 +37,16 @@
     radius = 3
     args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
     
-#    args[:min_taken_date] = '1890-01-01 00:00:00'
-    
-#    args[:max_taken_date] = '1910-01-01 00:00:00'
-    args[:text] = 'landscape'
-    args[:per_page] = 20
-
    # requires min_taken_date or it will just give the past 12 hours...
+    args[:min_taken_date] = '1890-01-01 00:00:00'
+   if rand(2) == 0  # random
+     args[:max_taken_date] = '1910-01-01 00:00:00'
+   else
+    args[:text] = 'landscape'
+   end
 
     info = flickr.photos.search args
-    p info.length
+    p info.to_a.length
     title = info[0]['title']
     #p info[0]   
     info.each{|i|
@@ -60,4 +54,12 @@
       puts url
       system("start #{url}") if ARGV.index('--go')
     }
-  
+    outgoing = info.sample
+    return {:url => FlickRaw.url(outgoing), :title => outgoing['title']}
+ end 
+
+end
+
+if $0 == __FILE__
+  p FlickrPhoto.get_photo_hash_with_url_and_title
+end
