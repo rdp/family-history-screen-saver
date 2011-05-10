@@ -66,9 +66,9 @@ module M
     
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
-      ratio = width.to_f/height
-      new_width = (Time.now.to_f*35) % (width)
-      ratio*new_height = height - (Time.now.to_f*35) % (height)
+      ratio = width.to_f/height()
+      new_width = (Time.now.to_f*35) % (width+100)
+      new_height = height - (Time.now.to_f*35) % (height+100)
       g.translate(new_width, new_height)
       g.rotate(0.3, 0, 0)
       g.drawImage(get_image,0,0,self)

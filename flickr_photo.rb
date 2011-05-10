@@ -49,7 +49,6 @@ class FlickrPhoto
 
     info = flickr.photos.search args
     p info.to_a.length
-    title = info[0]['title']
     outgoing = info.sample
     return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
  end 
