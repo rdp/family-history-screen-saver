@@ -27,16 +27,18 @@ module M
       @timer = nil
       @start = Time.now
       pick_new_image
-      @switch_image_timer = javax.swing.Timer.new(0.02*1000, nil)
-      @switch_image_timer.start
+      switch_image_timer = javax.swing.Timer.new(15*1000, nil)
+      switch_image_timer.start
+      switch_image_timer.add_action_listener do |e|
+        Thread.new { pick_new_image } # do it in the background instead of in the one swing thread <sigh>
+      end
     end
 
     def pick_new_image
-      @img= java.awt.Toolkit.getDefaultToolkit().getImage("johnpack1.jpg")      
       hash = FlickrPhoto.get_photo_hash_with_url_and_title
       p hash[:title]
       download(hash[:url], 'temp.jpg')
-      @img=java.awt.Toolkit.getDefaultToolkit().getImage("temp.jpg")      
+      @img=java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = hash[:title]
     end
 
@@ -48,15 +50,16 @@ module M
       # by default it's all black...
       g.setColor( Color::WHITE )
       g.fillRect(0,0,1000,300)
-      g.drawImage(@img, 0, 0, @img.width, @img.height, nil) # failure here is ok now...
+      #_dbg 
+      g.drawImage(@img, 10, 0, @img.width, [@img.height, 290].min, nil) # x, y, width, height, observer
       # now the text
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       # every 20 seconds or so, eh?
       idx = (Time.now.to_i/3) % Stats.length
       if Time.now - @start < 5
-        idx = 0
         # force beginning 0 if we're at the start of a run
+        idx = 0
       end
       g.drawString(@image_title, 10, 30)
       g.drawString(Stats[idx], @img.width + 10, 100)
@@ -67,9 +70,9 @@ module M
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height()
-      new_width = (Time.now.to_f*35) % (width+100)
-      new_height = height - (Time.now.to_f*35) % (height+100)
-      g.translate(new_width, new_height)
+      new_x = (Time.now.to_f*35) % (width-100)
+      new_y = height - (Time.now.to_f*35) % (height-100)
+      g.translate(new_x, new_y)
       g.rotate(0.3, 0, 0)
       g.drawImage(get_image,0,0,self)
       unless @timer
