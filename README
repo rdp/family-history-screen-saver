@@ -3,3 +3,7 @@ I plan on searching for photos "related" to people's ancestors, ex:
 your g-gpa was born in new brunswick 1890
 
 so it will use flickr's api to search for photos of new brunswick around that time, and then display them as "flying images" in a screen saver saying "this is what things looked like for your great grandpa!"
+
+To run, download/install jruby
+$ jruby -S gem install flickraw
+$ jruby screen_saver.rb
