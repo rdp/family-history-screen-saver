@@ -1,7 +1,8 @@
  #   flickr.photos.search
 
- require 'rubygems'
- require 'flickraw'
+require 'rubygems'
+require 'flickraw'
+require 'date'
 
 module Enumerable
   def sample
@@ -12,49 +13,53 @@ end
 
 class FlickrPhoto
 
-  def self.get_photo_hash_with_url_and_title
+  def self.get_photo_hash_with_url_and_title place_name = 'new brunswick', incoming_start_year = '1890', incoming_end_year = '1910'
 
+    FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
+    FlickRaw.shared_secret="36f9a0945ec82822"
 
- FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
- FlickRaw.shared_secret="36f9a0945ec82822"
-
-    new_b = flickr.places.find :query => "new brunswick" # happiness!
+    new_b = flickr.places.find :query => place_name
+    
     latitude = new_b[0]['latitude'].to_f
     longitude = new_b[0]['longitude'].to_f
     p new_b[0]['latitude']
     place_id = new_b[0]['place_id']    
     p place_id
 
-    p 'begin flickr.photos.search' # place is is way too messed up
     args = {
-#      :lat => latitude, :lon => longitude,# :radius => 31,
+#      :lat => latitude, :lon => longitude,# :radius => 31, # using bbox for now
 #      :place_id => place_id
         :accuracy => 1
     }
-    
-    args[:bbox] = "1.00140103605456,51.35108866688886,1.040175061070918,51.3681866301438"
     
     radius = 3
     args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
     
    # requires min_taken_date or it will just give the past 12 hours...
-    args[:min_taken_date] = '1890-01-01 00:00:00'
+   args[:min_taken_date] = convert_year_to_timestamp incoming_start_year
+   Date.strptime('1890', '%Y')
+  
    if rand(2) == 0  # random
      title = 'neighbors'
-     args[:max_taken_date] = '1910-01-01 00:00:00'
+     args[:max_taken_date] = convert_year_to_timestamp incoming_end_year
    else
     title = 'new brunswick landscape'
     args[:text] = 'landscape'
    end
-
+p args
     info = flickr.photos.search args
     p info.to_a.length
     outgoing = info.sample
     return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
- end 
+  end 
+
+  def self.convert_year_to_timestamp year
+     Date.strptime(year, '%Y').strftime('%Y-%m-%d %H:%M:%S')
+  end
 
 end
 
 if $0 == __FILE__
-  p FlickrPhoto.get_photo_hash_with_url_and_title
+  got = FlickrPhoto.get_photo_hash_with_url_and_title
+  system("start #{got[:url]}")
 end

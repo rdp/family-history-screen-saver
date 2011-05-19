@@ -46,7 +46,7 @@ module M
       hash = FlickrPhoto.get_photo_hash_with_url_and_title
       p hash[:title]
       download(hash[:url], 'temp.jpg')
-      @img=java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
+      @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = hash[:title]
     end
     
@@ -58,7 +58,8 @@ module M
       end
       new_stats << "Your #{(["Great"]*(hash_stats[:relation_level]-1)).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
     end
-      
+    
+    # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
     def get_image
       image = BufferedImage.new(1000, 300, BufferedImage::TYPE_INT_RGB);
       g = image.createGraphics()
@@ -104,19 +105,11 @@ module M
   
 end
 
-def dbg
-  require 'rubygems'
-  require 'ruby-debug'
-  debugger
-end
-
-alias _dbg dbg
-
 frame = M::ShowImage.new
 frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
 
-# full screen
-#frame.setUndecorated(true)
+# faux full screen
+# frame.setUndecorated(true) ??
 frame.setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
 
 # and visible
