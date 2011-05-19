@@ -1,19 +1,19 @@
+== next ==
+use "real" family search API, with sandbox
+  start with fake root, can get *his* new brunswick, name
+    with his dad can get *his* new brunswick, name
 
-v 0.0.1
 
+== random ==
+can use their "notes" for url's
 
-
-v. 0.1:
-  you put in your relationship to John Pack, it maps to that ?
-  
-v 1 
-  real screensaver
+apply for real API key
+you put in your relationship to John Pack, it maps to that ?
+real screensaver
     and get rid of title bar, etc.
-  it can have several people, local mapped to images.
-  get rid of multiple heads...
+it can have several people, local mapped to images.
   
 inspiring quotes like "don't let these people down!" "they're relying on you!"
-use "real" family search API
 
 interesting statistics about you, "x cousins, y cousins second removed, z direct ancestors, spanning x years,
 q countries you're from, spans epsion countries, [bugzilla items]"

@@ -3,24 +3,15 @@ require 'os'
 
 Jeweler::Tasks.new do |s|
     s.name = "family_history_screen_saver"
-    # s.summary = "an EDL scene-selector/bleeper that works with online players like hulu"
-    # s.email = "rogerdpack@gmail.com"
-    # s.homepage = "http://github.com/rdp"
-    # s.authors = ["Roger Pack"]
-    # s.add_dependency 'sane', '>= 0.22.0'
-    # s.add_dependency 'rdp-win32screenshot', '>= 0.0.7.3'
-    # s.add_dependency 'mini_magick', '>= 3.1' # for ocr...
-    # s.add_dependency 'whichr', '>= 0.3.6'
-    # s.add_dependency 'jruby-win32ole'
-    # s.add_dependency 'rdp-ruby-wmi'
-    # s.add_dependency 'ffi' # mouse, etc.
-    # s.add_development_dependency 'rspec' # prefer rspec 2 I guess...
-    # s.add_development_dependency 'jeweler'
-    # s.add_development_dependency 'hitimes' # now jruby compat!
-    # s.extensions = ["ext/mkrf_conf.rb"]
+    s.summary = File.read('README')
+    s.add_dependency 'flickraw'
+    s.add_dependency 'andand'
+    s.add_dependency 'ruby-fs-stack'
+    s.add_dependency 'sand'
 end
 
 desc 'create distro zippable file'
+
 task 'create_distro_dir' do
   require 'fileutils'
   require 'net/http'
