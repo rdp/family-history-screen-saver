@@ -1,5 +1,5 @@
 require'java'
-require 'flickr_photo'
+require 'flickr_photo' # my file
 
 def download full_url, to_here
   require 'open-uri'
@@ -41,7 +41,20 @@ module M
       @image_title = hash[:title]
     end
 
-    Stats = ["John Pack", "Born 1809", "Born New Brunswick Canada", "Your Great Grand Father"]
+    hash_stats = {:name=>"John Pack", :relation_level=>3, :gender=>"Male", :birth_place=>"New Brunswick Canada", :birth_date=>"1809"}
+    
+    
+    Stats = ["John Pack", "Born 1809", "Born New Brunswick Canada", "Your Great Great Grand Father"]
+    new_stats = [hash_stats[:name]]
+    for birth_type in [:birth_date, :birth_place]
+      incoming = hash_stats[birth_type]
+      new_stats << "Born #{incoming}" if incoming
+    end
+    
+    new_stats << "Your #{(["Great"]*(hash_stats[:relation_level]-1)).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
+    p Stats
+    p new_stats
+    raise unless Stats == new_stats
 
     def get_image
       image = BufferedImage.new(1000, 300, BufferedImage::TYPE_INT_RGB);
