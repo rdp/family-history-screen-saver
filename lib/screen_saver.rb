@@ -25,56 +25,58 @@ module M
       super
       @timer = nil
       @start = Time.now
-      pick_new_image
+      setup_ancestors
+      pick_new_image_for_current_ancestor
       switch_image_timer = javax.swing.Timer.new(15*1000, nil)
       switch_image_timer.start
       switch_image_timer.add_action_listener do |e|
-        Thread.new { pick_new_image } # do it in the background instead of in the one swing thread <sigh>
+        Thread.new {  pick_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
       end
+      
     end
+    
+    def setup_ancestors
+      # lodo just use rotate :P
+      @ancestors = [{:name=>"John Pack", :relation_level=>3, :gender=>"Male", :birth_place=>"New Brunswick Canada", :birth_date=>"1809"}]
+      @stats = translate_ancestor_info_to_info_strings @ancestors[0]
+    end
+    
 
-    def pick_new_image
+    def pick_new_image_for_current_ancestor
       hash = FlickrPhoto.get_photo_hash_with_url_and_title
       p hash[:title]
       download(hash[:url], 'temp.jpg')
       @img=java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = hash[:title]
     end
-
-    hash_stats = {:name=>"John Pack", :relation_level=>3, :gender=>"Male", :birth_place=>"New Brunswick Canada", :birth_date=>"1809"}
     
-    
-    Stats = ["John Pack", "Born 1809", "Born New Brunswick Canada", "Your Great Great Grand Father"]
-    new_stats = [hash_stats[:name]]
-    for birth_type in [:birth_date, :birth_place]
-      incoming = hash_stats[birth_type]
-      new_stats << "Born #{incoming}" if incoming
+    def translate_ancestor_info_to_info_strings hash_stats
+      new_stats = [hash_stats[:name]]
+      for birth_type in [:birth_date, :birth_place]
+        incoming = hash_stats[birth_type]
+        new_stats << "Born #{incoming}" if incoming
+      end
+      new_stats << "Your #{(["Great"]*(hash_stats[:relation_level]-1)).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
     end
-    
-    new_stats << "Your #{(["Great"]*(hash_stats[:relation_level]-1)).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
-    p Stats
-    p new_stats
-    raise unless Stats == new_stats
-
+      
     def get_image
       image = BufferedImage.new(1000, 300, BufferedImage::TYPE_INT_RGB);
       g = image.createGraphics()
       # by default it's all black...
       g.setColor( Color::WHITE )
       g.fillRect(0,0,1000,300)
-      #_dbg 
       g.drawImage(@img, 10, 0, @img.width, [@img.height, 290].min, nil) # x, y, width, height, observer
       # now the text
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       # every 20 seconds or so, eh?
-      idx = (Time.now.to_i/3) % Stats.length
+      idx = (Time.now.to_i/3) % @stats.length
       if Time.now - @start < 5
         # force beginning 0 if we're at the start of a run
         idx = 0
       end
       g.drawString(@image_title, 10, 30)
-      g.drawString(Stats[idx], @img.width + 10, 100)
+      g.drawString(@stats[idx], @img.width + 10, 100)
       g.dispose
       image
     end
