@@ -52,6 +52,7 @@ module M
     def setup_ancestors
       p 'computing your ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes.shuffle
+      p 'got ancestors', @ancestors
     end
     
     def pick_new_ancestor
@@ -80,15 +81,17 @@ module M
         incoming = hash_stats[birth_type]
         new_stats << "Born #{incoming}" if incoming
       end
-      number_of_greats = hash_stats[:relation_level]-2
-      number_of_greats = 0 if number_of_greats < 0
+      
+      # 0 is you, 1 is father
+      generations_from_you = hash_stats[:relation_level]
       output = "Your "
-      if number_of_greats > 1
-        output += (["Great "] * number_of_greats).join('')
+      if generations_from_you >= 3
+        output += (["Great "] * (generations_from_you - 2)).join('')
       end
-      if number_of_greats > 0
+      if generations_from_you >= 2
         output += " Grand"
       end
+      
       if hash_stats[:gender] == 'Male'
         output += "father"
       else
