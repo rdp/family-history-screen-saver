@@ -29,18 +29,20 @@ module M
       setup_ancestors
       pick_new_ancestor
       
-      pick_new_image_for_current_ancestor
-      switch_image_timer = javax.swing.Timer.new(5*1000, nil)
+      pick_and_download_new_image_for_current_ancestor
+      switch_image_timer = javax.swing.Timer.new(10*1000, nil)
       switch_image_timer.start
       switch_image_timer.add_action_listener do |e|
-        Thread.new {  pick_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
+        Thread.new { pick_and_download_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
       end
       
-      switch_ancestor_timer = javax.swing.Timer.new(10*1000, nil)
+      switch_ancestor_timer = javax.swing.Timer.new(19*1000, nil)
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
         pick_new_ancestor
-        switch_image_timer.fireActionPerformed(nil) # re-fire, re-set its delay
+        switch_image_timer.restart()
+        pick_and_download_new_image_for_current_ancestor
+        switch_image_timer.restart()
       end
 
     end
@@ -48,21 +50,19 @@ module M
     def setup_ancestors
       p 'computing your ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes
-      p 'ancestors:', @ancestors
     end
     
     def pick_new_ancestor
       # rotate
       @ancestor = @ancestors.shift
       @ancestors << @ancestor
-      p 'doing ancestor' + @ancestor.inspect
+      p 'doing next ancestor' + @ancestor.inspect
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
     end
     
-    def pick_new_image_for_current_ancestor
+    def pick_and_download_new_image_for_current_ancestor
       hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
-      p 'downloading ' + hash.inspect
       download(hash[:url], 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = hash[:title]
@@ -118,7 +118,7 @@ module M
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height()
-      new_x = (Time.now.to_f*35) % (width-250) # not go off the page
+      new_x = (Time.now.to_f*35) % (width-350) # not go off the page too far
       new_y = (height - (Time.now.to_f*35)) % (height-150)
       g.translate(new_x, new_y)
       g.rotate(0.3, 0, 0)
