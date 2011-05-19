@@ -55,7 +55,7 @@ def add_person person, array, level
     end
   end
   
-  array << [hash]
+  array << hash if level > 0 # don't care about yourself, right?
   add_person person.father, array, level + 1 if person.father
   add_person person.mother, array, level + 1 if person.mother
 end

@@ -1,7 +1,6 @@
 == next ==
 use "real" family search API, with sandbox
-  start with fake root, can get *his* new brunswick, name
-    with his dad can get *his* new brunswick, name
+  can cycle ancestors...rotate
 
 
 == random ==

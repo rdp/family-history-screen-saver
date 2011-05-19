@@ -1,5 +1,6 @@
 require'java'
 require 'flickr_photo' # my file
+require '1_pedigree_example' 
 
 def download full_url, to_here
   require 'open-uri'
@@ -36,9 +37,11 @@ module M
     end
     
     def setup_ancestors
+      p 'calculating ancestors...'
+      @ancestors = give_me_all_ancestors_as_hashes
+      p 'ancestors:', @ancestors
       # lodo just use rotate :P
-      @ancestors = [{:name=>"John Pack", :relation_level=>3, :gender=>"Male", :birth_place=>"New Brunswick Canada", :birth_date=>"1809"}]
-      @ancestor =  @ancestors[0]
+      @ancestor = @ancestors[0]
       p 'doing ancestor' + @ancestor.inspect
       @stats = translate_ancestor_info_to_info_strings @ancestor
     end
@@ -57,7 +60,7 @@ module M
         incoming = hash_stats[birth_type]
         new_stats << "Born #{incoming}" if incoming
       end
-      new_stats << "Your #{(["Great"]*(hash_stats[:relation_level]-1)).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
+      new_stats << "Your #{(["Great"]*(hash_stats[:relation_level])).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
     end
     
     # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
