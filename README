@@ -4,5 +4,7 @@ your g-gpa was born in new brunswick 1890
 
 so it will use flickr's api to search for photos of new brunswick around that time, and then display them as "flying images" in a screen saver saying "this is what things looked like for your great grandpa!"
 
+To run, download/install jruby
 
-prereqs: jruby, ruby-fs-stack gem, flickraw gem
+$ jruby -S gem install flickraw ruby-fs-stack sane andand
+$ jruby screen_saver.rb
