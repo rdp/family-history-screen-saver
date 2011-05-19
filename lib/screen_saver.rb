@@ -1,13 +1,12 @@
 require'java'
 require 'flickr_photo'
 
-    def download full_url, to_here
-      require 'open-uri'
-      writeOut = open(to_here, "wb")
-      writeOut.write(open(full_url).read)
-      writeOut.close
-    end
-
+def download full_url, to_here
+  require 'open-uri'
+  writeOut = open(to_here, "wb")
+  writeOut.write(open(full_url).read)
+  writeOut.close
+end
 
 module M
   include_package "javax.swing"
