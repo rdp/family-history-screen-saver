@@ -46,7 +46,7 @@ module M
     end
     
     def setup_ancestors
-      p 'calculating ancestors...'
+      p 'computing your ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes
       p 'ancestors:', @ancestors
     end
@@ -57,6 +57,7 @@ module M
       @ancestors << @ancestor
       p 'doing ancestor' + @ancestor.inspect
       @stats = translate_ancestor_info_to_info_strings @ancestor
+      @name = @stats.shift
     end
     
     def pick_new_image_for_current_ancestor
@@ -108,7 +109,8 @@ module M
         idx = 0
       end
       g.drawString(@image_title, 10, 30)
-      g.drawString(@stats[idx], @img.width + 10, 100)
+      g.drawString(@name, @img.width + 10, 100)
+      g.drawString(@stats[idx], @img.width + 10, 150)
       g.dispose
       image
     end
