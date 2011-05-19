@@ -37,13 +37,13 @@ class FlickrPhoto
      args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
       
      if rand(2) == 0 && incoming_birth_year # don't alwayas select it...
-       args[:min_taken_date] = convert_year_to_timestamp (incoming_birth_year - 10).to_s
+       args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
        Date.strptime('1890', '%Y')
-       title = 'neighbors'
-       args[:max_taken_date] = convert_year_to_timestamp (incoming_birth_year + 10).to_s
+       title = 'photo from nearby'
+       args[:max_taken_date] = convert_year_to_timestamp(incoming_birth_year + 10).to_s
      else
       title = "#{place_name} landscape"
-      args[:text] = 'landscape'
+      args[:text] = 'birthplace landscape'
      end
      if @@cache[args]
        all = @@cache[args]

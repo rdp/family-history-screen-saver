@@ -40,8 +40,10 @@ module M
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
         pick_new_ancestor
+        p 'picked new ancestor, downloading image'
         switch_image_timer.restart()
         pick_and_download_new_image_for_current_ancestor
+        p 'downloaded new image for him'
         switch_image_timer.restart()
       end
 
@@ -54,9 +56,13 @@ module M
     
     def pick_new_ancestor
       # rotate
-      @ancestor = @ancestors.rotate![0]
-      @ancestors << @ancestor
-      p 'doing next ancestor' + @ancestor.inspect
+      birth_place = nil
+      until birth_place
+        @ancestor = @ancestors.shift
+        p 'doing next ancestor' + @ancestor.inspect
+        @ancestors << @ancestor
+        birth_place = @ancestor[:birth_place]
+      end
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
     end
@@ -119,7 +125,7 @@ module M
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height()
-      new_x = (Time.now.to_f*35) % (width-350) # not go off the page too far
+      new_x = (Time.now.to_f*35) % (width-550) # not go off the page too far
       new_y = (height - (Time.now.to_f*35)) % (height-150)
       g.translate(new_x, new_y)
       g.rotate(0.3, 0, 0)
