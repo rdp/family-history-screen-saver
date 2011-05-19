@@ -27,6 +27,8 @@ module M
       @timer = nil
       @start = Time.now
       setup_ancestors
+      pick_new_ancestor
+      
       pick_new_image_for_current_ancestor
       switch_image_timer = javax.swing.Timer.new(15*1000, nil)
       switch_image_timer.start
@@ -34,12 +36,21 @@ module M
         Thread.new {  pick_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
       end
       
+      switch_ancestor_timer = javax.swing.Timer.new(15*1000, nil)
+      switch_ancestor_timer.start
+      switch_ancestor_timer.add_action_listener do |e|
+#        pick_new_ancestor # do it in the background instead of in the one swing thread <sigh>
+      end
+
     end
     
     def setup_ancestors
       p 'calculating ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes
       p 'ancestors:', @ancestors
+    end
+    
+    def pick_new_ancestor
       # lodo just use rotate :P
       @ancestor = @ancestors[0]
       p 'doing ancestor' + @ancestor.inspect
@@ -60,7 +71,21 @@ module M
         incoming = hash_stats[birth_type]
         new_stats << "Born #{incoming}" if incoming
       end
-      new_stats << "Your #{(["Great"]*(hash_stats[:relation_level])).join(' ')} Grand #{hash_stats[:gender] == 'Male' ? 'Father' : 'Mother'}"
+      number_of_greats = hash_stats[:relation_level]-2
+      number_of_greats = 0 if number_of_greats < 0
+      output = "Your "
+      if number_of_greats > 1
+        output += (["Great "] * number_of_greats).join('')
+      end
+      if number_of_greats > 0
+        output += " Grand"
+      end
+      if hash_stats[:gender] == 'Male'
+        output += "father"
+      else
+        output += "mother"
+      end
+      new_stats << output
     end
     
     # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
