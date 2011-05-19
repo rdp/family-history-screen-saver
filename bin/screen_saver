@@ -1,0 +1,2 @@
+require 'sane'
+require_relative '../lib/screen_saver.rb'
