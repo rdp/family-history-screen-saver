@@ -1,0 +1,47 @@
+The OS gem allows for some easy telling if you're on windows or not.
+
+require 'os'
+>> OS.windows?
+=> true   # also OS.doze?
+
+>> OS.bits
+=> 32
+
+>> OS.java?
+=> true # if you're running in jruby also OS.jruby?
+
+>> OS.ruby_bin
+=> "c:\ruby18\bin\ruby.exe" # or "/usr/local/bin/ruby" or what not
+
+>> OS.posix?
+=> false
+
+>> OS.mac?
+=> false
+
+>> OS.java? # same as OS.jruby?
+=> true
+
+>> OS.dev_null
+=> "NUL" # or "/dev/null" depending on which platform
+
+>> OS.rss_bytes
+=> 12300033 # rss bytes this process is using currently, works in Linux/windows
+
+If there are any other features you'd like, let me know.
+
+github.com/rdp/os for feedback et al
+
+Related projects:
+
+rubygems:
+Gem::Platform.local
+Gem.ruby
+
+facets gem (similar to rubygems, above)
+require 'facets/platform'
+Platform.local
+
+the "platform" gem, itself (different gem)
+
+The reason Gem::Platform.local felt wrong to me is that it treated cygwin as windows--which for most build environments, is wrong.

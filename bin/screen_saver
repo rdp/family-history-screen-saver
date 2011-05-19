@@ -1,2 +1,6 @@
+for dir in Dir['**/lib'] do
+ $: << File.expand_path(dir)
+end
+$: << './lib'
 require 'sane'
 require_relative '../lib/screen_saver.rb'

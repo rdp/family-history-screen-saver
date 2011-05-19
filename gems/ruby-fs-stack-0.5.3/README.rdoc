@@ -1,0 +1,165 @@
+= ruby-fs-stack
+
+This project aims to provide functionality for all of the 
+API modules provided by FamilySearch.
+
+== Installation
+
+Install the ruby-fs-stack gem
+
+  sudo gem install ruby-fs-stack
+  
+=== JSON gem
+Ruby-fs-stack needs a json gem, but does not force it as a dependency.
+
+  sudo gem install json
+
+or if you are using JRuby
+
+  sudo gem install json-jruby
+
+or for the pure Ruby implementation
+
+  sudo gem install json_pure
+
+== Example Usage
+
+=== Authenticating with FamilySearch
+
+  require 'rubygems'
+  require 'ruby-fs-stack'
+  
+  # Optionally, you can pass a logger to the communicator
+  # the logger can be the standard Ruby Logger or any logger 
+  # that responds to :info or :debug like the Rails logger
+  require 'logger'
+  logger = Logger.new('fs_stack.log')
+  
+  communicator = FsCommunicator.new :domain => 'http://www.dev.usys.org', # or 'https://api.familysearch.org'
+                                    :key => 'DEVELOPER-KEY',
+                                    :user_agent => 'Ruby-Fs-Stack/v.1 (JimmyZimmerman) FsCommunicator/0.1 (Ruby)',
+                                    :logger => logger
+
+  communicator.identity_v1.authenticate :username => 'USERNAME', :password => 'PASSWORD' #=> true
+  communicator.session #=> "USYSE4EF197..."
+
+=== Reading Person Records
+
+  me = communicator.familytree_v2.person :me
+  puts "My name: " + me.full_name
+  puts "My birthdate: " + me.birth.value.date.normalized
+
+  # Read only the version number for a person
+  vperson = communicator.familytree_v2.person 'KW3B-NNM', :names => 'none', :genders => 'none', :events => 'none'
+  puts "Person's version: " + vperson.person
+  
+  # read the person and the parent, family, and child information
+  person = communicator.familytree_v2.person 'KW3B-NNM', :parents => 'summary', :families => 'all', :children => 'all'
+  
+  puts "Gender: " + person.gender
+  puts "First parent ID: " + person.parents[0].parents[0].id
+  puts "First child ID: " + person.families[0].children[0].id
+  puts "First spouse's gender: " + person.families[0].parents[1].gender
+  puts "First spouse's ID: " + person.families[0].parents[1].id
+  
+  # Read multiple persons in one request.
+  # You can request as many person records as needed. The communicator will
+  # check the person.max.ids property from the /familytree/v2/properties call 
+  # and will automatically break the array into appropriate slices, then return the whole.
+  people = communicator.familytree_v2.person ['KW3B-NNM','KWQS-BBQ','KWQS-BBR'], :parents => 'all', :children => 'all', :families => 'all'
+  people.size #=> 3
+  
+  # Ruby blocks:
+  # You can pass a block to the person read that will be executed for each person
+  # or set of persons immediately after they are read. This is useful if you want to
+  # create a progress indicator if you are requesting a very large array of persons.
+  ids = ['KWCZ-1WL','KWCH-DGY','KWZR-RPD','KWCH-DPM','KWCH-DP9',
+        'KN1H-HBK','KLYL-KPZ','2794-46L','279W-NDV','KWJJ-5Y3','26KN-QTT',
+        'KWCV-7F7','2NQ9-FGV','K2WM-SHZ','KCR4-MBW','KWZR-RPX']
+  # because we are passing 16 ids, this will require 2 person reads (10 persons each read)
+  # the block will be called twice with the persons in each batch passed
+  progress_count = 0
+  communicator.familytree_v2.person ids do |persons|
+    progress_count += persons.size
+    puts progress_count
+  end
+  
+  # if a single ID is passed, then the block will receive a single person, not an array
+  # of persons
+  communicator.familytree_v2.person :me do |person|
+    puts person.id
+  end
+  
+=== Searching Records
+
+  search = communicator.familytree_v2.search  :givenName => "John", 
+                                              :familyName => "Doe",
+                                              :birthDate => "12 Jun 1812",
+                                              :birthPlace => "Virginia, United States",
+                                              :father => {:givenName => "Robert"},
+                                              :maxResults => 10
+  search.count #=> 10
+  search.close #=> 2
+  search.partial #=> 16
+  search.results.each do |result|
+    puts result.score #=> 4.0
+    puts result.id #=> "KW3B-JXV"
+    puts result.person.full_name #=> "John Doe"
+    puts result.person.birth.date.original #=> "abt 1812"
+    puts result.father.full_name #=> "Robert Doe"
+    puts result.mother.full_name #=> "Ruby Johnson"
+    puts result.spouses.first.full_name #=> "Sarah Franklin"
+  end
+  
+=== Combining Records
+
+  # reads the latest version numbers for the people requested and POSTs a combine request.
+  new_person = communicator.familytree_v2.combine ['KWQS-BBQ','KWRS-BBZ','KWQS-BNR']
+  new_person.id #=> 'KWQS-ZZZ'
+  new_person.version #=> '687799'
+
+=== Selecting the Summary View
+  
+  # assuming you know the value IDs that you want to set as summary
+  # grab a person with the ID and version set
+  person = communicator.familytree_v2.person 'KWQS-BBQ', :names => 'none', :events => 'none', :genders => 'none'
+  person.select_name_summary "100078"
+  person.select_birth_summary "1089498"
+  person.select_death_summary "7834987"
+  person.select_spouse_summary "KWQS-BBB"
+  # you must set both the mother and the father summary unless you want a single parent as the summary parents.
+  person.select_mother_summary "KWQS-MOM"
+  person.select_father_summary "KWQS-DAD"
+  communicator.familytree_v2.save_person person
+
+=== Adding notes to an assertion
+
+  # assuming you know the assertion value ID that you want to create a note on
+  note = communicator.familytree_v2.write_note :personId => 'KWQS-BBQ', :assertionId => '60000021', :text => "This is my note text."
+  note.id #=> 'ZnMtZnQucC5LVzNCLU5NRzpwLjE0MDAwMDAwNDIyOjQwMDAwM29nMlpWOTgxOVpCWWs4RjAwMA=='
+  
+  # As soon as this bug is fixed, https://issues.devnet.familysearch.org/issues/show/149, it you can write
+  # notes on relationship assertions
+  marriage_note = communicator.familytree_v2.write_note :spouseIds => ['KWQS-BBQ','KWQS-BBR'], :assertionId => '700000001', :text => "This is my note."
+  
+  lineage_note = communicator.familytree_v2.write_note :parentIds => ['KWQS-BBQ'], :childId => 'KWQS-BBZ', :assertionId => '700000001', :text => "This is my note."
+  
+  # To add a "Person Note" as seen in the new FamilySearch web application, attach the note to an exists assertion
+  # You find these by doing a person read with the :exists => 'all' option.
+
+== RDoc
+
+RDoc is hosted at rdoc.info:
+
+http://rdoc.info/projects/jimmyz/ruby-fs-stack
+  
+== Discussion
+
+A Google Group has been set up for questions and discussion
+around the ruby-fs-stack project.
+
+http://groups.google.com/group/ruby-fs-stack
+
+== Copyright
+
+Copyright (c) 2009 Jimmy Zimmerman. See LICENSE for details.

@@ -15,6 +15,7 @@ class FlickrPhoto
 
   @@cache = {}
   def self.get_random_photo_hash_with_url_and_title place_name, incoming_birth_year
+     raise unless place_name
      p 'searching', place_name, incoming_birth_year
      FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
      FlickRaw.shared_secret="36f9a0945ec82822"

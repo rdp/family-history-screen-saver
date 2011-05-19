@@ -49,12 +49,12 @@ module M
     
     def setup_ancestors
       p 'computing your ancestors...'
-      @ancestors = give_me_all_ancestors_as_hashes
+      @ancestors = give_me_all_ancestors_as_hashes.shuffle
     end
     
     def pick_new_ancestor
       # rotate
-      @ancestor = @ancestors.shift
+      @ancestor = @ancestors.rotate![0]
       @ancestors << @ancestor
       p 'doing next ancestor' + @ancestor.inspect
       @stats = translate_ancestor_info_to_info_strings @ancestor
@@ -93,12 +93,13 @@ module M
     
     # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
     def get_image
-      image = BufferedImage.new(1000, 300, BufferedImage::TYPE_INT_RGB);
+      image = BufferedImage.new(1000, 350, BufferedImage::TYPE_INT_RGB);
       g = image.createGraphics()
       # by default it's all black...
       g.setColor( Color::WHITE )
-      g.fillRect(0,0,1000,300)
-      g.drawImage(@img, 10, 0, @img.width, [@img.height, 290].min, nil) # x, y, width, height, observer
+      g.fillRect(0,0,1000,350)
+      image_height = [@img.height, 290].min
+      g.drawImage(@img, 10, 0, @img.width, image_height, nil) # x, y, width, height, observer
       # now the text
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
@@ -108,7 +109,7 @@ module M
         # force beginning 0 if we're at the start of a run
         idx = 0
       end
-      g.drawString(@image_title, 10, 30)
+      g.drawString(@image_title, 30, image_height + 50)
       g.drawString(@name, @img.width + 10, 100)
       g.drawString(@stats[idx], @img.width + 10, 150)
       g.dispose

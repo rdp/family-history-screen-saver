@@ -12,7 +12,7 @@ end
 
 desc 'create distro zippable file'
 
-task 'create_distro_dir' do
+task 'create_distro_dir' => 'gemspec' do 
   require 'fileutils'
   require 'net/http'
   spec = eval File.read('family_history_screen_saver.gemspec')
@@ -20,7 +20,7 @@ task 'create_distro_dir' do
   FileUtils.rm_rf Dir[spec.name + '-*'] # remove old versions
   raise 'unable to delete' if Dir[spec.name + '-*'].length > 0
   
-  unless File.exist? 'vendor/cache/jruby-complete-1.5.5.jar' 
+  unless File.exist? 'vendor/cache/jruby-complete-1.6.1.jar' 
    FileUtils.mkdir_p 'vendor/cache'
    puts 'downloading in jruby-complete.jar file' 
      # jruby complete .jar file
