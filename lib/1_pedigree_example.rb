@@ -29,7 +29,6 @@ end
 
 if authenticate_me($com)
   my_pedigree = $com.familytree_v2.pedigree :me
-  $com.familytree_v2.pedigree :me
 #  my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
   print_pedigree my_pedigree.root
 end
