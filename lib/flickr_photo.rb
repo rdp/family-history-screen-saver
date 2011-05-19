@@ -13,8 +13,12 @@ end
 
 class FlickrPhoto
 
-  def self.get_photo_hash_with_url_and_title place_name = 'new brunswick', incoming_start_year = '1890', incoming_end_year = '1910'
-
+  def self.get_random_photo_hash_with_url_and_title place_name, incoming_birth_year
+    if incoming_birth_year
+      incoming_start_year = incoming_birth_year - 10
+      incoming_end_year = incoming_birth_year + 10
+    end
+     p 'searching', place_name, incoming_start_year, incoming_end_year
      FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
      FlickRaw.shared_secret="36f9a0945ec82822"
   
@@ -34,17 +38,15 @@ class FlickrPhoto
      radius = 3
      args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
       
-     # requires min_taken_date or it will just give the past 12 hours...
-     args[:min_taken_date] = convert_year_to_timestamp incoming_start_year
-     Date.strptime('1890', '%Y')
-    
-    if rand(2) == 0 # random...
+     if rand(2) == 0 && incoming_birth_year # don't alwayas select it...
+       args[:min_taken_date] = convert_year_to_timestamp incoming_start_year.to_s
+       Date.strptime('1890', '%Y')
        title = 'neighbors'
-       args[:max_taken_date] = convert_year_to_timestamp incoming_end_year
-    else
+       args[:max_taken_date] = convert_year_to_timestamp incoming_end_year.to_s
+     else
       title = "#{place_name} landscape"
       args[:text] = 'landscape'
-    end
+     end
      info = flickr.photos.search args
      outgoing = info.sample
      return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
@@ -57,6 +59,6 @@ class FlickrPhoto
 end
 
 if $0 == __FILE__
-  got = FlickrPhoto.get_photo_hash_with_url_and_title 'new brunswick', '1890', '1910'
+  got = FlickrPhoto.get_random_photo_hash_with_url_and_title 'new brunswick', 1890
   system("start #{got[:url]}")
 end

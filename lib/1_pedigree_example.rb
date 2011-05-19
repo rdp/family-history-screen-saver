@@ -49,7 +49,9 @@ def add_person person, array, level
     birth_date = birth.date.andand.normalized
     if birth_date
       birth_date =~ /(\d{4})/
-      hash[:birth_year] = $1
+      if $1
+        hash[:birth_year] = $1.to_i
+      end
     end
   end
   

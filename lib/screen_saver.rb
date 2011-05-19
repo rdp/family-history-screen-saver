@@ -38,13 +38,14 @@ module M
     def setup_ancestors
       # lodo just use rotate :P
       @ancestors = [{:name=>"John Pack", :relation_level=>3, :gender=>"Male", :birth_place=>"New Brunswick Canada", :birth_date=>"1809"}]
-      @stats = translate_ancestor_info_to_info_strings @ancestors[0]
+      @ancestor =  @ancestors[0]
+      p 'doing ancestor' + @ancestor.inspect
+      @stats = translate_ancestor_info_to_info_strings @ancestor
     end
     
-
     def pick_new_image_for_current_ancestor
-      hash = FlickrPhoto.get_photo_hash_with_url_and_title
-      p hash[:title]
+      hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
+      p 'downloading ' + hash.inspect
       download(hash[:url], 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = hash[:title]
@@ -85,8 +86,8 @@ module M
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height()
-      new_x = (Time.now.to_f*35) % (width-100)
-      new_y = height - (Time.now.to_f*35) % (height-100)
+      new_x = (Time.now.to_f*35) % (width-150) # not go off the page
+      new_y = height - (Time.now.to_f*35) % (height-150)
       g.translate(new_x, new_y)
       g.rotate(0.3, 0, 0)
       g.drawImage(get_image,0,0,self)
