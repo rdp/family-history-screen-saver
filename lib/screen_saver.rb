@@ -52,7 +52,7 @@ module M
     
     def translate_ancestor_info_to_info_strings hash_stats
       new_stats = [hash_stats[:name]]
-      for birth_type in [:birth_date, :birth_place]
+      for birth_type in [:birth_year, :birth_place]
         incoming = hash_stats[birth_type]
         new_stats << "Born #{incoming}" if incoming
       end

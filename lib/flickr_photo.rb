@@ -22,14 +22,13 @@ class FlickrPhoto
     
     latitude = new_b[0]['latitude'].to_f
     longitude = new_b[0]['longitude'].to_f
-    p new_b[0]['latitude']
     place_id = new_b[0]['place_id']    
-    p place_id
+    p 'flickr place id:' + place_id
 
     args = {
 #      :lat => latitude, :lon => longitude,# :radius => 31, # using bbox for now
 #      :place_id => place_id
-        :accuracy => 1
+        :accuracy => 1 # needed, too, or returns like 0 things
     }
     
     radius = 3
@@ -46,9 +45,7 @@ class FlickrPhoto
     title = 'new brunswick landscape'
     args[:text] = 'landscape'
    end
-p args
     info = flickr.photos.search args
-    p info.to_a.length
     outgoing = info.sample
     return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
   end 

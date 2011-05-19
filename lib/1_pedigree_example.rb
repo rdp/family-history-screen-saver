@@ -46,7 +46,11 @@ def add_person person, array, level
   hash = {:name => real_person.full_name, :relation_level => level, :gender => real_person.gender}
   if birth = real_person.births[0]
     hash[:birth_place] = birth.place.andand.normalized.andand.value
-    hash[:birth_date] = birth.date.normalized
+    birth_date = birth.date.andand.normalized
+    if birth_date
+      birth_date =~ /(\d{4})/
+      hash[:birth_year] = $1
+    end
   end
   
   array << [hash]
