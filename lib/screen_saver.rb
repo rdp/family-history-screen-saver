@@ -10,6 +10,8 @@ if fake_ancestry
     
      [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]
     
+      [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]
+    
      [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}]
   end
 
@@ -32,6 +34,7 @@ module M
   BufferedImage # boo http://jira.codehaus.org/browse/JRUBY-5107
   Font
   Color
+  RenderingHints
   
   class ShowImage < JFrame
     include java.awt.event.ActionListener
@@ -114,12 +117,18 @@ module M
       new_stats << output
     end
     
-    # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
+    # returns a java Image object from currently cached image...this currently might not be too cpu friendly though... :P
     def get_floater_image
       image = BufferedImage.new(1000, 350, BufferedImage::TYPE_INT_RGB);
+      unless @img
+        p 'not loaded yet, perhaps?'
+        return image
+      end
       g = image.createGraphics()
-      # by default it's all black...
+      # by default it's all black...I think.
       g.setColor( Color::WHITE )
+      
+      
       g.fillRect(0,0,1000,350)
       image_height = [@img.height, 290].min
       g.drawImage(@img, 10, 0, @img.width, image_height, nil) # x, y, width, height, observer
@@ -141,12 +150,10 @@ module M
     
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
-      
-      #g.drawImage(get_floater_image,0,0,self) # upper left
-      
+      # g.drawImage(get_floater_image,0,0,self) # upper left
       ratio = width.to_f/height()
-      new_x = (Time.now.to_f*35) % (width-550) # not go off the page too far
-      new_y = (height - (Time.now.to_f*35)) % (height-150)
+      new_x = (Time.now.to_f*35) % (width-600) # not go off the page too far
+      new_y = (height() - (Time.now.to_f*35)) % (height-150)
       g.translate(new_x, new_y)
       g.rotate(0.2, 0, 0)
       g.drawImage(get_floater_image,0,0,self)

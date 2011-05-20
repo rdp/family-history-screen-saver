@@ -33,12 +33,12 @@ class FlickrPhoto
          :accuracy => 1 # needed, too, or returns like 0 things
       }
       
-     radius = 3
+     radius = 2 # I think each one is 60 miles
      args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
-       title = 'photo from nearby'
+       title = 'photo same place/time period:' # photo from nearby
        args[:max_taken_date] = convert_year_to_timestamp(incoming_birth_year + 10).to_s
        all = do_flicker_search args
        if all.size == 0
