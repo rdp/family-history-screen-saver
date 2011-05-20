@@ -1,0 +1,1 @@
+java -cp "./vendor/cache/jruby-complete-1.6.1.jar" org.jruby.Main --1.9 bin/screen_saver
