@@ -69,7 +69,8 @@ module M
     def setup_ancestors
       p 'computing your ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes.shuffle
-      p 'got ancestors', @ancestors
+      require 'pp'
+      pp 'got ancestors', @ancestors
     end
     
     def pick_new_ancestor
