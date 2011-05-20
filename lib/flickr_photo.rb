@@ -55,6 +55,12 @@ class FlickrPhoto
       args[:text] = "landscape #{place_name.split(',')[0]}" # seems to work great
       # another option
       all = do_flicker_search args
+      if all.size == 0
+        p 'last shot...'
+        args[:text] = 'landscape'
+        all = do_flicker_search args
+      end
+
      end
     
      outgoing = all.sample # randomize :P
