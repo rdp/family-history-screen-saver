@@ -36,15 +36,15 @@ module M
         Thread.new { pick_and_download_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
       end
       
-      switch_ancestor_timer = javax.swing.Timer.new(19*1000, nil)
+      switch_ancestor_timer = javax.swing.Timer.new(17*1000, nil)
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
-        pick_new_ancestor
-        p 'picked new ancestor, downloading image'
-        switch_image_timer.restart()
-        pick_and_download_new_image_for_current_ancestor
-        p 'downloaded new image for him'
-        switch_image_timer.restart()
+        Thread.new {
+          pick_new_ancestor
+          switch_image_timer.restart()
+          pick_and_download_new_image_for_current_ancestor
+          switch_image_timer.restart()
+        }
       end
 
     end

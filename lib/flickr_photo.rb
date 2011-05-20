@@ -41,18 +41,29 @@ class FlickrPhoto
        Date.strptime('1890', '%Y')
        title = 'photo from nearby'
        args[:max_taken_date] = convert_year_to_timestamp(incoming_birth_year + 10).to_s
-     else
-      title = "#{place_name} landscape"
-      args[:text] = 'birthplace landscape'
+       all = do_flicker_search args
+       want_others = true if all.size == 0
+    else
+       want_others = true
+    end
+    
+    if want_others
+       title = "#{place_name} landscape"
+       args[:text] = 'landscape'
+      all = do_flicker_search args
      end
-     if @@cache[args]
-       all = @@cache[args]
-     else 
-       all = flickr.photos.search args
-     end
-     outgoing = all.sample
+    
+     outgoing = all.sample # randomize :P
      return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
   end 
+  
+  def self.do_flicker_search args
+    if @@cache[args]
+      return @@cache[args]
+    else
+      @@cache[args] = flickr.photos.search args # this does take like 2s...
+    end
+  end
 
   def self.convert_year_to_timestamp year
      Date.strptime(year.to_s, '%Y').strftime('%Y-%m-%d %H:%M:%S')
