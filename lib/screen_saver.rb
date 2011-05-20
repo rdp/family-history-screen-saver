@@ -63,7 +63,7 @@ module M
           switch_image_timer.restart()
         }
       end
-
+      set_title("Your ancestors")
     end
     
     def setup_ancestors
@@ -73,7 +73,7 @@ module M
     end
     
     def pick_new_ancestor
-      # rotate
+      # rotate...
       birth_place = nil
       until birth_place
         @ancestor = @ancestors.shift
@@ -83,6 +83,7 @@ module M
       end
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
+      # too annoying @img = nil
     end
     
     def pick_and_download_new_image_for_current_ancestor
@@ -119,18 +120,17 @@ module M
     
     # returns a java Image object from currently cached image...this currently might not be too cpu friendly though... :P
     def get_floater_image
-      image = BufferedImage.new(1000, 350, BufferedImage::TYPE_INT_RGB);
+      floater_height = 450
+      image = BufferedImage.new(1000, floater_height, BufferedImage::TYPE_INT_RGB);
+      g = image.createGraphics()
+      # by default it's all black...I think.
+      g.setColor( Color::WHITE )
+      g.fillRect(0,0,1000,floater_height)
       unless @img
         p 'not loaded yet, perhaps?'
         return image
       end
-      g = image.createGraphics()
-      # by default it's all black...I think.
-      g.setColor( Color::WHITE )
-      
-      
-      g.fillRect(0,0,1000,350)
-      image_height = [@img.height, 290].min
+      image_height = [@img.height, floater_height - 60].min
       g.drawImage(@img, 10, 0, @img.width, image_height, nil) # x, y, width, height, observer
       # now the text
       g.setColor( Color::BLACK )
