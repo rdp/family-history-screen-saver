@@ -2,6 +2,20 @@ require'java'
 require 'flickr_photo' # my file
 require '1_pedigree_example' 
 
+fake_ancestry = false
+
+if fake_ancestry
+
+  def give_me_all_ancestors_as_hashes
+    
+     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]
+    
+     [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}]
+  end
+
+end
+
+
 def download full_url, to_here
   require 'open-uri'
   writeOut = open(to_here, "wb")
@@ -29,8 +43,8 @@ module M
       setup_ancestors
       pick_new_ancestor
       
-      pick_and_download_new_image_for_current_ancestor
-      switch_image_timer = javax.swing.Timer.new(10*1000, nil)
+      pick_and_download_new_image_for_current_ancestor rescue nil # can fail at times
+      switch_image_timer = javax.swing.Timer.new(5*1000, nil)
       switch_image_timer.start
       switch_image_timer.add_action_listener do |e|
         Thread.new { pick_and_download_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
@@ -101,7 +115,7 @@ module M
     end
     
     # returns a java Image object of currently cached image...this might not be cpu friendly though... :P
-    def get_image
+    def get_floater_image
       image = BufferedImage.new(1000, 350, BufferedImage::TYPE_INT_RGB);
       g = image.createGraphics()
       # by default it's all black...
@@ -127,12 +141,15 @@ module M
     
     def paint(g)
       # it wants to float "smoothly" across the pseudo screen
+      
+      #g.drawImage(get_floater_image,0,0,self) # upper left
+      
       ratio = width.to_f/height()
       new_x = (Time.now.to_f*35) % (width-550) # not go off the page too far
       new_y = (height - (Time.now.to_f*35)) % (height-150)
       g.translate(new_x, new_y)
-      g.rotate(0.3, 0, 0)
-      g.drawImage(get_image,0,0,self)
+      g.rotate(0.2, 0, 0)
+      g.drawImage(get_floater_image,0,0,self)
       unless @timer
         duration = 0.02*1000
         @timer = javax.swing.Timer.new(duration, self)

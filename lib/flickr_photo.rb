@@ -16,7 +16,6 @@ class FlickrPhoto
   @@cache = {}
   def self.get_random_photo_hash_with_url_and_title place_name, incoming_birth_year
      raise unless place_name
-     p 'searching', place_name, incoming_birth_year
      FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
      FlickRaw.shared_secret="36f9a0945ec82822"
   
@@ -36,29 +35,37 @@ class FlickrPhoto
       
      radius = 3
      args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
-      
-     if rand(2) == 0 && incoming_birth_year # don't alwayas select it...
+     original_args = args.dup # save them away...
+     if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
-       Date.strptime('1890', '%Y')
        title = 'photo from nearby'
        args[:max_taken_date] = convert_year_to_timestamp(incoming_birth_year + 10).to_s
        all = do_flicker_search args
-       want_others = true if all.size == 0
+       if all.size == 0
+         p 'no photos from same place, time available, choosing generic landscape of place'
+         want_others = true
+       end
     else
        want_others = true
     end
-    
+
     if want_others
-       title = "#{place_name} landscape"
-       args[:text] = 'landscape'
+      args = original_args # reset
+      title = "landscape #{place_name}"
+      args[:text] = "landscape #{place_name.split(',')[0]}" # seems to work great
+      # another option
       all = do_flicker_search args
      end
     
      outgoing = all.sample # randomize :P
-     return {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
+     p outgoing
+     as_hash = {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
+     p as_hash
+     as_hash
   end 
   
   def self.do_flicker_search args
+    p 'searching', args
     if @@cache[args]
       return @@cache[args]
     else
