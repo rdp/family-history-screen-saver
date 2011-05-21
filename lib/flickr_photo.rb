@@ -32,9 +32,7 @@ class FlickrPhoto
          :safe_search => 1, # try to avoid "bad" pictures
          :accuracy => 1 # needed, too, or returns like 0 things
       }
-      
-     radius = 2 # I think each one is 60 miles
-     args[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
+     add_radius(2, args) 
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
@@ -53,6 +51,7 @@ class FlickrPhoto
       args = original_args # reset
       title = "landscape #{place_name}"
       args[:text] = "landscape #{place_name.split(',')[0]}" # seems to work great
+      args[:text].gsub!(/twp/i, '') # hack hack
       # another option
       all = do_flicker_search args
       if all.size == 0
@@ -68,7 +67,11 @@ class FlickrPhoto
      as_hash = {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
      p as_hash
      as_hash
-  end 
+  end
+
+  def self.add_radius radius, to_this
+     to_this[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
+  end
   
   def self.do_flicker_search args
     p 'searching', args
