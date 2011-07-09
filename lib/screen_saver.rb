@@ -70,6 +70,7 @@ module M
       p 'computing your ancestors...'
       @ancestors = give_me_all_ancestors_as_hashes.shuffle
       require 'pp'
+      raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
       pp 'got ancestors', @ancestors
     end
     
