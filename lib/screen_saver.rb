@@ -1,6 +1,6 @@
-require'java'
+require 'java'
 require 'flickr_photo' # my file
-require '1_pedigree_example' 
+require 'family_search_api' 
 
 fake_ancestry = false
 
