@@ -7,7 +7,7 @@ Jeweler::Tasks.new do |s|
     s.add_dependency 'flickraw'
     s.add_dependency 'andand'
     s.add_dependency 'ruby-fs-stack'
-    s.add_dependency 'sand'
+    #s.add_dependency 'sand'
 end
 
 desc 'create distro zippable file'

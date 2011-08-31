@@ -1,0 +1,6 @@
+The FamilySearch API License agreement has been modified
+to allow the distribution of the enunciate code libraries
+to be distributed in Open Source projects under the terms
+in lib/ruby-fs-stack/enunciate/LICENSE.
+
+No further action needs to be taken to use this library.
