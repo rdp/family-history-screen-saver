@@ -1,10 +1,21 @@
 == next ==
 
-  fix the image transition problem...
+  can request, use user credentials
+    an option "just run with test data" even for production :P
 
-  can use their "notes" for image url's (dropbox example...)
+  cache users' pedigree tree... :P
+    so they don't have to login every time...
+
+  apply for real production API key
+
+  make it distributable installerable?
 
 == random ==
+
+fix the image transition problem...
+
+create a local image log
+
 
 make "just the background behind the text transparent" so that it ends up like a montage
 
@@ -18,31 +29,26 @@ can display long stories in story form...
 
 cache .jpg images locally too [?]
 
-cache users' pedigree tree... :P
 
 fabricated notes "they moved 3 times! They lost a child at 3! They lived during the great depression, etc." 
 the notes themselves like "this guy saved a bear" or what not.
 
-my own hosting image web server, or just tell them how to use facebook...or how to use dropbox yeah :P
+tell them how to use facebook...or how to use dropbox yeah :P
 
 "the declaration of independence signed then" with picture of that [?]
-photos of events during that tiem period.
+photos of events during that time period.
 
 born in 1620? any 1620 picture LOL
-
-"Lived at the same time as Tchaikovsky, Joseph Smith"
 
 "These inventions occurred during their life time"
 "these events occurred during their life time"
 
 famous pictures from the span of their lifetime, like "classic 1900" picture'ish
 
-pictures of temples [?]
+pictures of temples, maybe based on the date of the event in question [?]
 
 also use google image search perhaps?
 
-apply for real production API key
-you put in your relationship to John Pack, it maps to that ?
 real screensaver
     and get rid of title bar, etc.
   
@@ -71,4 +77,10 @@ a quiz
 
 something that takes two images and "guesses" what their children will look like--you can compare yourself to that!
 
-you can add pictures locally of your kids, have those displayed, too :)
+you can add pictures locally of your kids (and self, and others), to have those displayed, too :)
+
+can accept a local "this directory has my family photos in it, for this many generations" and it can use those, too...
+
+you can add facebook credentials for somebody and it uses them for latest status update [local? remote?]
+
+a facebook-ified version: your friend was born here, here's some pictures about that place/time
