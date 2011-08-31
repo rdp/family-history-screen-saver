@@ -140,7 +140,9 @@ module M
     # returns a java Image object from currently cached image...this currently might not be too cpu friendly though... :P
     def get_floater_image
       floater_height = 450
+      
       image = BufferedImage.new(1000, floater_height, BufferedImage::TYPE_INT_RGB);
+      
       g = image.createGraphics()
       # by default it's all black...I think.
       g.setColor( Color::WHITE )
