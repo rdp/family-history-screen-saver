@@ -32,7 +32,7 @@ class FlickrPhoto
          :safe_search => 1, # try to avoid "bad" pictures
          :accuracy => 1 # needed, too, or returns like 0 things
       }
-     add_radius(2, args) 
+     add_radius(2, args, latitude, longitude) 
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
@@ -69,8 +69,8 @@ class FlickrPhoto
      as_hash
   end
 
-  def self.add_radius radius, to_this
-     to_this[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
+  def self.add_radius radius, to_this_hash, latitude, longitude
+    to_this_hash[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
   end
   
   def self.do_flicker_search args
@@ -78,7 +78,7 @@ class FlickrPhoto
     if @@cache[args]
       return @@cache[args]
     else
-      @@cache[args] = flickr.photos.search args # this does take like 2s...
+      @@cache[args] = flickr.photos.search args # this takes like 2s, so we cache it...
     end
   end
 

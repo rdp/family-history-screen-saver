@@ -2,17 +2,18 @@ require 'java'
 require 'flickr_photo' # my file
 require 'family_search_api' 
 
-fake_ancestry = false
+use_fake_ancestry = true
 
-if fake_ancestry
+if use_fake_ancestry
 
   def give_me_all_ancestors_as_hashes
     
-     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]
+#     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]
     
-      [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]
+ #     [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]
     
-     [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}]
+     [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
+        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"]}]
   end
 
 end
@@ -41,15 +42,20 @@ module M
     
     def initialize
       super
+      set_title("Your ancestors")
       @timer = nil
       @start = Time.now
       setup_ancestors
       pick_new_ancestor
       
-      pick_and_download_new_image_for_current_ancestor rescue nil # can fail at times
-      switch_image_timer = javax.swing.Timer.new(5*1000, nil)
-      switch_image_timer.start
-      switch_image_timer.add_action_listener do |e|
+      begin
+        pick_and_download_new_image_for_current_ancestor 
+      rescue => e
+        p 'download failed?' + e.to_s # ignore, so basically re-use the old image
+      end
+      switch_image_same_ancestor_timer = javax.swing.Timer.new(5*1000, nil)
+      switch_image_same_ancestor_timer.start
+      switch_image_same_ancestor_timer.add_action_listener do |e|
         Thread.new { pick_and_download_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
       end
       
@@ -58,12 +64,11 @@ module M
       switch_ancestor_timer.add_action_listener do |e|
         Thread.new {
           pick_new_ancestor
-          switch_image_timer.restart()
+          switch_image_same_ancestor_timer.restart()
           pick_and_download_new_image_for_current_ancestor
-          switch_image_timer.restart()
+          switch_image_same_ancestor_timer.restart()
         }
       end
-      set_title("Your ancestors")
     end
     
     def setup_ancestors
@@ -85,14 +90,25 @@ module M
       end
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
-      # too annoying @img = nil
+      # too annoying, but does preserve continuity... @img = nil
     end
     
     def pick_and_download_new_image_for_current_ancestor
-      hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
-      download(hash[:url], 'temp.jpg')
+      if(@ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
+        url = @ancestor[:image_note_urls].sample
+        p 'doing local', url
+        new_title = url.split('/')[-1].split('.')[0..-2]
+      else
+        hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
+        p 'doing flickr', hash
+        url = hash[:url]
+        new_title = hash[:title]
+      end
+      p 'downloading...', url
+      download(url, 'temp.jpg')
+      p 'success...'
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
-      @image_title = hash[:title]
+      @image_title = new_title
     end
     
     def translate_ancestor_info_to_info_strings hash_stats
@@ -129,7 +145,7 @@ module M
       g.setColor( Color::WHITE )
       g.fillRect(0,0,1000,floater_height)
       unless @img
-        p 'not loaded yet, perhaps?'
+        p 'image not downloaded yet, perhaps? -- not drawing it...'
         return image
       end
       image_height = [@img.height, floater_height - 60].min

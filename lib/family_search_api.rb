@@ -11,9 +11,7 @@ $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttli
 authenticate_me($com)
 me = $com.familytree_v2.person :me
 
-#   my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
-
-#suggest: pedigree_instance.parent should raise, really, shouldn't it?
+#my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
 
 def add_person person, array, level
   # add self at this level
@@ -30,7 +28,7 @@ def add_person person, array, level
     end
     
   end
-  hash[:image_urls] = get_me_all_urls_in_the_notes_for_this_person person.id
+  hash[:image_note_urls] = get_me_all_urls_in_the_notes_for_this_person person.id
   p hash
   array << hash if level > 0 # don't care about yourself, right?
   add_person person.father, array, level + 1 if person.father
@@ -62,16 +60,16 @@ end
 
 
 def get_me_all_urls_in_the_notes_for_this_person person_id
-  me = $com.familytree_v2.person "KW7V-T2M", :personas => 'all' # XXXX pass this in?
+  me = $com.familytree_v2.person person_id, :personas => 'all'
   all = []
   me.personas.personas.each{|persona|
-    persona_retrieved = $com.get("/familytree/v2/persona/KW7V-T2M?session=#{$com.session}&properties=all&names=all&events=all&characteristics=all&ordinances=all&identifiers=all&submitters=all&citations=all&notes=all&contributors=all&exists=all")
+    persona_retrieved = $com.get("/familytree/v2/persona/#{person_id}?session=#{$com.session}&properties=all&names=all&events=all&characteristics=all&ordinances=all&identifiers=all&submitters=all&citations=all&notes=all&contributors=all&exists=all")
     parsed = JSON.parse persona_retrieved.body
     all_persona_stuff = flatten_object(parsed)
-    all_persona_stuff.select!{|element| element.is_a?(String) && element =~ /\w{74}/} # some are citations, some are notes...
-    for note_hash in all
+    hashes = all_persona_stuff.select{|element| element.is_a?(String) && element =~ /\w{74}/} # some are citations, some are notes...
+    for note_hash in hashes
        begin
-        yo = $com.get("/familytree/v2/note/#{id}?sessionId=#{$com.session}")
+        yo = $com.get("/familytree/v2/note/#{note_hash}?sessionId=#{$com.session}")
         p yo.body.scan(URL_MATCHER).map(&:first)
         all += yo.body.scan(URL_MATCHER).map(&:first)
        rescue RubyFsStack::NotFound => ignore
@@ -88,6 +86,7 @@ def give_me_all_ancestors_as_hashes
   $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
   raise unless authenticate_me($com)
   my_pedigree = $com.familytree_v2.pedigree :me
+  # my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
   starting = my_pedigree.root
   all = [] 
   add_person(starting, all, 0)
