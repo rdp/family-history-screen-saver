@@ -36,7 +36,7 @@ class FlickrPhoto
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
-       title = 'photo from nearby:' # photo from nearby
+       title = ''
        args[:max_taken_date] = convert_year_to_timestamp(incoming_birth_year + 10).to_s
        all = do_flicker_search args
        if all.size == 0

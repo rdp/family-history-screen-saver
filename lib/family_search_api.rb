@@ -8,10 +8,6 @@ require 'andand'
 require_relative 'authenticate'
 
 $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
-authenticate_me($com)
-me = $com.familytree_v2.person :me
-
-#my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
 
 def add_person person, array, level
   # add self at this level
@@ -29,8 +25,7 @@ def add_person person, array, level
     
   end
   hash[:image_note_urls] = get_me_all_urls_in_the_notes_for_this_person person.id
-  p hash
-  array << hash if level > 0 # don't care about yourself, right?
+  array << hash if level >= 0 # include yourself, since you're a real person :)
   add_person person.father, array, level + 1 if person.father
   add_person person.mother, array, level + 1 if person.mother
 end

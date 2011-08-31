@@ -2,7 +2,7 @@ require 'java'
 require 'flickr_photo' # my file
 require 'family_search_api' 
 
-use_fake_ancestry = true
+use_fake_ancestry = false # for live demo'ing, or testing :)
 
 if use_fake_ancestry
 
@@ -72,11 +72,11 @@ module M
     end
     
     def setup_ancestors
-      p 'computing your ancestors...'
+      p 'downloading ancestors information...'
       @ancestors = give_me_all_ancestors_as_hashes.shuffle
       require 'pp'
       raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
-      pp 'got ancestors', @ancestors
+      pp 'got ancestors', @ancestors.map{|a| [a[:name], a[:image_note_urls]]}
     end
     
     def pick_new_ancestor
@@ -84,7 +84,7 @@ module M
       birth_place = nil
       until birth_place
         @ancestor = @ancestors.shift
-        p 'doing next ancestor' + @ancestor.inspect
+        p 'doing a different ancestor' + @ancestor.inspect
         @ancestors << @ancestor
         birth_place = @ancestor[:birth_place]
       end
@@ -97,16 +97,16 @@ module M
       if(@ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
         url = @ancestor[:image_note_urls].sample
         p 'doing local', url
-        new_title = url.split('/')[-1].split('.')[0..-2]
+        new_title = url.split('/')[-1].split('.')[0..-2].join('.')
+        @image_title_prefix = ''
       else
         hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
+        @image_title_prefix = 'Photo from nearby:'
       end
-      p 'downloading...', url
       download(url, 'temp.jpg')
-      p 'success...'
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = new_title
     end
@@ -133,6 +133,7 @@ module M
       else
         output += "mother"
       end
+      output = 'Yourself' if generations_from_you == 0
       new_stats << output
     end
     
@@ -150,7 +151,7 @@ module M
       end
       image_height = [@img.height, floater_height - 60].min
       g.drawImage(@img, 10, 0, @img.width, image_height, nil) # x, y, width, height, observer
-      # now the text
+      # now the text around it
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       # every 20 seconds or so, eh?
@@ -159,8 +160,8 @@ module M
         # force beginning 0 if we're at the start of a run
         idx = 0
       end
-      g.drawString(@image_title, 30, image_height + 50)
-      g.drawString(@name, @img.width + 10, 100)
+      g.drawString(@image_title_prefix + ' ' + @image_title, 30, image_height + 50)
+      g.drawString(@name, @img.width + 30, 100)
       g.drawString(@stats[idx], @img.width + 10, 150)
       g.dispose
       image
