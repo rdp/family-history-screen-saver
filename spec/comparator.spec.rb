@@ -8,7 +8,7 @@ require_relative 'given.rb'
 
 describe M::ShowImage do
   
-  given "two genealogies" do
+  before do # TODO given
     @ancestors1 = eval(File.read('ancestors.rb'))
     @ancestors2 = eval(File.read('ancestors2.rb'))
   end
@@ -17,19 +17,14 @@ describe M::ShowImage do
     Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should =~ /no match/i
   end
   
-  it "should tell you you are cousins" do
-    @ancestors2 << {:name=>"Don Elbert Pack",
-      :afn=>"KWQC-VTP",  :relation_level=>2} # common grandpa...
-    Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should == 'cousins'
-  end
-
-  it "should tell you you are self" do
-    @ancestors2 << {:name=>"Don Elbert Pack",
-      :afn=>"KWQC-VTP",  :relation_level=>0}
-    @ancestors1 << {:name=>"Don Elbert Pack",
-      :afn=>"KWQC-VTP",  :relation_level=>0}
-    Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should == 'self'
-  end
-  
+  {2 => "cousins", 0 => "self", 1 => "brother/sister"}.each{|level, expected_answer|
+    it "should tell you you are various direct relationships" do
+      @ancestors2 << {:name=>"Don Elbert Packlocal",
+        :afn=>"KWQC-VTPlocal",  :relation_level=>level}
+      @ancestors1 << {:name=>"Don Elbert Packlocal",
+        :afn=>"KWQC-VTPlocal",  :relation_level=>level}
+      Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should == expected_answer
+    end
+  }
   
 end

@@ -29,6 +29,8 @@ class Comparator
       'cousins'
     elsif best_ancestor_relat == 0
       'self'
+    elsif best_ancestor_relat == 1
+      'brother/sister'
     else
       'no match--you\'re not related!'
     end
