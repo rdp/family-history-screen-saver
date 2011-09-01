@@ -25,7 +25,9 @@ describe M::ShowImage do
 
   it "should tell you you are self" do
     @ancestors2 << {:name=>"Don Elbert Pack",
-      :afn=>"KWQC-VTP",  :relation_level=>0} # common self
+      :afn=>"KWQC-VTP",  :relation_level=>0}
+    @ancestors1 << {:name=>"Don Elbert Pack",
+      :afn=>"KWQC-VTP",  :relation_level=>0}
     Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should == 'self'
   end
   
