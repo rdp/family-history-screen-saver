@@ -17,7 +17,7 @@ describe M::ShowImage do
     Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should =~ /no match/i
   end
   
-  {2 => "cousins", 0 => "self", 1 => "brother/sister"}.each{|level, expected_answer|
+  {0 => "self", 1 => "brother/sister", 2 => "cousins", 3 => "2nd cousin", 5 => "4th cousin" }.each{|level, expected_answer|
     it "should tell you you are various direct relationships" do
       @ancestors2 << {:name=>"Don Elbert Packlocal",
         :afn=>"KWQC-VTPlocal",  :relation_level=>level}
@@ -26,5 +26,11 @@ describe M::ShowImage do
       Comparator.tell_me_relationship_between(@ancestors2, @ancestors1).should == expected_answer
     end
   }
+  
+  it "should tell you second cousin once removed"
+  
+  it "should tell you who your ancestor is"
+  
+  
   
 end

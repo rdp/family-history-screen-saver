@@ -4,8 +4,9 @@ require 'os'
 Jeweler::Tasks.new do |s|
     s.name = "family_history_screen_saver"
     s.summary = File.read('README')
-    s.add_dependency 'flickraw'
+    s.add_dependency 'flickraw', '> 0.8.4' # also needs this commit https://github.com/hanklords/flickraw/commit/4297e5905e8d1cd6794d2141c155c0b6eb890fb2
     s.add_dependency 'andand'
+    s.add_dependency 'linguistics'
     s.add_dependency 'ruby-fs-stack'
     #s.add_dependency 'sand'
 end
