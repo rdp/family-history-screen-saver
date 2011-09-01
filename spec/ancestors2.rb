@@ -34,5 +34,5 @@
   :birth_place=>"Salt Lake City, Salt Lake, Utah, United States",
   :birth_year=>1873,
   :image_note_urls=>["http://dl.dropbox.com/u/40012820/johnpack1.jpg"],
-  :afn=>"KWQC-VTP"}, # NON FAKE
+  :afn=>"KWQC-VTPfake"},
 ]

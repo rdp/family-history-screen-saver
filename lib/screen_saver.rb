@@ -81,7 +81,9 @@ module M
     
     def setup_ancestors
       p 'downloading ancestors information...'
-      @ancestors = give_me_all_ancestors_as_hashes.shuffle
+      @ancestors = give_me_all_ancestors_as_hashes
+      p 'got ancestors', @ancestors
+      @ancestors.shuffle!
       require 'pp'
       raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
       pp 'got ancestors', @ancestors
