@@ -1,6 +1,11 @@
-for dir in Dir['**/lib'] do
- $: << File.expand_path(dir)
-end
-$: << './lib'
-require 'sane'
-require_relative '../lib/screen_saver.rb'
+require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
+
+frame = M::ShowImage.new
+frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
+
+# faux full screen
+# frame.setUndecorated(true) ??
+frame.setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
+
+# and visible
+frame.visible=true

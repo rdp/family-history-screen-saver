@@ -25,6 +25,7 @@ def add_person person, array, level
     
   end
   hash[:image_note_urls] = get_me_all_urls_in_the_notes_for_this_person person.id
+  hash[:afn] = person.id
   array << hash if level >= 0 # include yourself, since you're a real person :)
   add_person person.father, array, level + 1 if person.father
   add_person person.mother, array, level + 1 if person.mother

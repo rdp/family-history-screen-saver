@@ -1,4 +1,12 @@
 require 'java'
+
+# bundled gems...
+for dir in Dir[File.dirname(__FILE__) + '/../**/lib'] do
+  $: << File.expand_path(dir)
+end
+$: << './lib'
+require 'sane'
+
 require 'flickr_photo' # my file
 require 'family_search_api' 
 
@@ -13,7 +21,7 @@ if use_fake_ancestry
  #     [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]
     
      [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
-        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"]}]
+        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
   end
 
 end
@@ -76,7 +84,7 @@ module M
       @ancestors = give_me_all_ancestors_as_hashes.shuffle
       require 'pp'
       raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
-      pp 'got ancestors', @ancestors.map{|a| [a[:name], a[:image_note_urls]]}
+      pp 'got ancestors', @ancestors
     end
     
     def pick_new_ancestor
@@ -192,15 +200,3 @@ module M
   end
   
 end
-
-frame = M::ShowImage.new
-frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
-
-# faux full screen
-# frame.setUndecorated(true) ??
-frame.setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
-
-# and visible
-frame.visible=true
-
-
