@@ -10,7 +10,7 @@ require 'sane'
 require 'flickr_photo' # my file
 require 'family_search_api' 
 
-use_fake_ancestry = false # for live demo'ing, or testing :)
+use_fake_ancestry = true # for demo'ing, or testing :)
 
 if use_fake_ancestry
 

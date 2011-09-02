@@ -29,8 +29,10 @@ describe M::ShowImage do
   
   it "should tell you second cousin once removed"
   
-  it "should tell you who your ancestor is"
+  it "should tell you who the ancestor is"
   
+  it "should link you to george washington"
   
+  it "should allow for it to actually *be* your grandpa et al LOL"
   
 end
