@@ -1,3 +1,4 @@
+$: << '.'
 require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
 frame = M::ShowImage.new

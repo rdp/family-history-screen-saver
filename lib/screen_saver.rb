@@ -10,7 +10,7 @@ require 'sane'
 require 'flickr_photo' # my file
 require 'family_search_api' 
 
-use_fake_ancestry = true # for demo'ing, or testing :)
+use_fake_ancestry = false # for demo'ing, or testing :)
 
 if use_fake_ancestry
 
@@ -50,7 +50,7 @@ module M
     
     def initialize
       super
-      set_title("Your ancestors")
+      set_title("You and Your Ancestors")
       @timer = nil
       @start = Time.now
       setup_ancestors
