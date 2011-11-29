@@ -16,7 +16,10 @@ task 'create_distro_dir' => 'gemspec' do
   require 'fileutils'
   spec = eval File.read('family_history_screen_saver.gemspec')
   dir_out = spec.name + "-" + spec.version.version + '/' + spec.name
-  FileUtils.rm_rf Dir[spec.name + '-*'] # remove old versions
+  Dir[spec.name + '-*'].each{|old|
+    p 'removing ' + old
+    FileUtils.rm_rf old
+  }
   raise 'unable to delete' if Dir[spec.name + '-*'].length > 0
   
   raise unless File.exist? 'vendor/jruby-complete-1.6.1.jar' 
