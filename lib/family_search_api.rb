@@ -5,7 +5,8 @@ $:.unshift __DIR__ + "/vendor/cache/ruby-fs-stack/lib/ruby-fs-stack"
 require 'ruby-fs-stack'
 require 'andand'
 
-require_relative 'authenticate'
+require __DIR__ + "/deps.jar"
+require 'authenticate'
 
 $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
 
