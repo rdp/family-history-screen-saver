@@ -1,7 +1,7 @@
 require 'java'
 
 # bundled gems...
-for dir in Dir[File.dirname(__FILE__) + '/../**/lib'] do
+for dir in Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib'] do
   $: << File.expand_path(dir)
 end
 $: << './lib'
@@ -64,7 +64,14 @@ module M
       switch_image_same_ancestor_timer = javax.swing.Timer.new(5*1000, nil)
       switch_image_same_ancestor_timer.start
       switch_image_same_ancestor_timer.add_action_listener do |e|
-        Thread.new { pick_and_download_new_image_for_current_ancestor } # do it in the background instead of in the one swing thread <sigh>
+        Thread.new { 
+          begin
+            pick_and_download_new_image_for_current_ancestor 
+          rescue Exception => e
+            SwingHelpers.show_blocking_message_dialog "flickr failed?:" + e.to_s
+            raise
+          end
+        } # do it in the background instead of in the one swing thread <sigh>
       end
       
       switch_ancestor_timer = javax.swing.Timer.new(17*1000, nil)

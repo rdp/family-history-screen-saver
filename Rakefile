@@ -34,5 +34,6 @@ task 'create_distro_dir' => 'gemspec' do
   p 'created (still need to zip it!) ' + dir_out
   raise unless OS.doze?
   raise unless system "\"c:\\Program Files\\7-Zip\\7z.exe\" a -tzip -r  #{prefix}.zip #{prefix}"
+  p 'created ' + prefix + '.zip'
 
 end
