@@ -1,1 +1,1 @@
-j -Ilib -rubygems bin\screen_saver
+j -Ilib bin\screen_saver

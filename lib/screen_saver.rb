@@ -166,7 +166,7 @@ module M
       end
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
-      g.drawString(@image_title_prefix + ' ' + @image_title, 30, 30)
+      g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 30)
       image_height = [@img.height, floater_height - 90].min
       g.drawImage(@img, 10, 60, @img.width, image_height, nil) # x, y, width, height, observer
       # now the text around it
