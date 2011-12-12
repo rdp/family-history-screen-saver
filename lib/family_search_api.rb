@@ -13,6 +13,7 @@ def add_person person, array, level
     p 'done downloading the first 200 people in your ancestry tree, stopping for now...'
     return
   end
+  $stdout.print '.'
   # add self at this level
   real_person = $com.familytree_v2.person person.id
   hash = {:name => real_person.full_name, :relation_level => level, :gender => real_person.gender}
