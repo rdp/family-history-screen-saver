@@ -53,8 +53,7 @@ def super_flatten_hash hash
   outgoing.map{|k, v|
     [flatten_object(k), flatten_object(v)]
   }.flatten
-end
-
+end
 
 def get_me_all_urls_in_the_notes_for_this_person person_id
   me = $com.familytree_v2.person person_id, :personas => 'all'
