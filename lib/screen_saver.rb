@@ -86,8 +86,9 @@ module M
       # faux full screen
       # frame.setUndecorated(true) ??
       setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
-      set_size(200,200)
-      # and finally, show it...
+      set_size(200,200) # in case them come out of maximized, have it show anything.
+      
+      # and finally, display it...
       self.visible=true
     end
     
