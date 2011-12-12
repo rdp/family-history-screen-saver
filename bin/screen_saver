@@ -2,12 +2,4 @@ puts 'Loading...'
 $: << '.'
 require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
-frame = M::ShowImage.new
-frame.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
-
-# faux full screen
-# frame.setUndecorated(true) ??
-frame.setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
-
-# and visible
-frame.visible=true
+M::ShowImage.new

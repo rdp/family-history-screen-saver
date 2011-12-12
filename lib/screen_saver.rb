@@ -81,6 +81,14 @@ module M
           switch_image_same_ancestor_timer.restart()
         }
       end
+      self.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
+
+      # faux full screen
+      # frame.setUndecorated(true) ??
+      setExtendedState(M::JFrame::MAXIMIZED_BOTH); 
+      set_size(200,200)
+      # and finally, show it...
+      self.visible=true
     end
     
     def setup_ancestors
@@ -183,10 +191,12 @@ module M
     end
     
     def paint(g)
+      # TODO when there's a change in image, clear the whole screen [?] and draw it once in the bottom right [?] maybe transparent? maybe avoid overwriting?
+      # g.draw_image(@img, self.width - @img.width, self.height - @img.height, self) if @img
       # it wants to float "smoothly" across the pseudo screen
       ratio = width.to_f/height()
       new_x = (Time.now.to_f*35) % (width-700) # not let it go too far right
-      new_y = (height() - (Time.now.to_f*35)) % (height-150)
+      new_y = (height() - (Time.now.to_f*35)) % (height-250)
       g.translate(new_x, new_y)
       g.rotate(0.2, 0, 0)
       g.drawImage(get_floater_image,0,0,self)
