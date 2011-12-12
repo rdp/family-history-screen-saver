@@ -1,3 +1,7 @@
+0.4.0 == 12-12-11
+
+can now take user logins, obfuscates credentials/keys
+
 0.3.0 ==
   now it works with any url mentioned in notes, as an image for the fella. sweet!
 

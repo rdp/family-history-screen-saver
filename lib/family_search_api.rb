@@ -1,5 +1,5 @@
+$:.unshift __DIR__ + "/vendor/ruby-fs-stack/lib/ruby-fs-stack"
 require 'sane'
-$:.unshift __DIR__ + "/vendor/cache/ruby-fs-stack/lib/ruby-fs-stack"
 require 'ruby-fs-stack'
 require 'andand'
 

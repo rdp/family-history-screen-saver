@@ -9,6 +9,7 @@ Jeweler::Tasks.new do |s|
     s.add_dependency 'andand'
     s.add_dependency 'linguistics'
     s.add_dependency 'ruby-fs-stack'
+    s.add_dependency 'sane'
 end
 
 desc 'create distro zippable file'

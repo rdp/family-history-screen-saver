@@ -50,7 +50,7 @@ module M
     
     def initialize
       super
-      set_title("You and Your Ancestors")
+      set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors Better!")
       @timer = nil
       @start = Time.now
       setup_ancestors
