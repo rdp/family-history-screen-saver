@@ -15,6 +15,6 @@ def authenticate_me(com)
   string1 = Java::Helper.string1
   string2 = Java::Helper.string2 # TODO prompt...
   string3 = Java::Helper.string3
-  com.key = File.read(translate(string1)) # TODO can use string2..., username1...
+  com.key = translate(string1)
   com.identity_v1.authenticate :username => translate(string2), :password => translate(string3)
 end
