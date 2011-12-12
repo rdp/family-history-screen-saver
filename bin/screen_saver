@@ -1,4 +1,4 @@
-puts 'Loading...'
+puts 'Loading Family Tree Screen Saver...'
 $: << '.'
 require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
