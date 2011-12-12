@@ -9,12 +9,10 @@ def translate string
   out
 end
 
-def authenticate_me(com, user = nil, pass = nil)
+def authenticate_me(com, user, pass)
   
   # string[1,2,3] => [k,u,p]
   string1 = translate(Java::Helper.string1)
-  user ||= translate(Java::Helper.string2) # TODO prompt...
-  pass ||= translate(Java::Helper.string3)
   com.key = string1
   com.identity_v1.authenticate :username => user, :password => pass
 end

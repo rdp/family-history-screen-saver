@@ -80,7 +80,16 @@ URL_MATCHER = /(((http|ftp|https):\/{2})+(([0-9a-z_-]+\.)+(aero|asia|biz|cat|com
 # like [{:name, :relation_level, :gender, :birth_place, :birth_year}, {:name...}, ... ]
 def give_me_all_ancestors_as_hashes
   $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
-  raise unless authenticate_me($com)
+  if File.exist? 'test_user'
+    user = File.read('test_user')
+    pass = File.read('test_pass')
+    raise unless pass
+  else
+    user = nil # TODO password prompt
+    pass = nil
+  end
+  p user, pass
+  raise unless authenticate_me($com, user, pass)
   my_pedigree = $com.familytree_v2.pedigree :me
   # my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
   starting = my_pedigree.root
