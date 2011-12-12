@@ -1,5 +1,6 @@
 require 'jeweler'
 require 'os'
+require 'fileutils'
 
 Jeweler::Tasks.new do |s|
     s.name = "family_history_screen_saver"
@@ -11,11 +12,10 @@ Jeweler::Tasks.new do |s|
 end
 
 desc 'create distro zippable file'
-
 task 'create_distro_dir' => 'gemspec' do 
-  require 'fileutils'
   spec = eval File.read('family_history_screen_saver.gemspec')
-  dir_out = spec.name + "-" + spec.version.version + '/' + spec.name
+  prefix = spec.name + "-" + spec.version.version
+  dir_out = prefix + '/' + spec.name
   Dir[spec.name + '-*'].each{|old|
     p 'removing ' + old
     FileUtils.rm_rf old
@@ -27,7 +27,11 @@ task 'create_distro_dir' => 'gemspec' do
   existing = Dir['*']
   FileUtils.mkdir_p dir_out
   FileUtils.cp_r(existing, dir_out)
+  FileUtils.rm_rf Dir[dir_out + '/lib/java'] # don't distribute this
   # this one belongs in the trunk
   FileUtils.cp("#{dir_out}/run_family_history_screen_saver.bat", "#{dir_out}/..")
   p 'created (still need to zip it!) ' + dir_out
+  raise unless OS.doze?
+  raise unless system "\"c:\\Program Files\\7-Zip\\7z.exe\" a -tzip -r  #{prefix}.zip #{prefix}"
+
 end
