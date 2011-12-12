@@ -1,3 +1,5 @@
+ENV['PATH'] = "C:\\Program Files (x86)\\Git\\cmd;" + ENV['PATH'] # real git.exe
+
 require 'jeweler'
 require 'os'
 require 'fileutils'
