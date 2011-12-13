@@ -103,8 +103,8 @@ module FamilySearchApi
       user = File.read('test_user')
       pass = File.read('test_pass')
     else
-      user = SwingHelpers.get_user_input('enter your *dev* familysearch login:')
-      pass = SwingHelpers.get_password_input('Enter your password for the same:')
+      user = SwingHelpers.get_user_input('Enter your *dev.usys* familysearch login name:')
+      pass = SwingHelpers.get_password_input('Enter password for the same:')
     end
     
     begin
