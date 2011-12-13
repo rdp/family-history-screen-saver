@@ -93,20 +93,16 @@ module M
     end
     
     def setup_ancestors
-      p 'downloading your ancestors\' information from new familysearch...'
-      @ancestors = FamilySearch.give_me_all_ancestors_as_hashes
-      p 'done, here are your ancestors:', @ancestors
-      @ancestors.shuffle!
-      raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
+      p 'starting download of your ancestors\' information from new familysearch...'
+      FamilySearchApi.give_me_random_ancestor
     end
     
     def pick_new_ancestor
       # rotate...
       birth_place = nil
       until birth_place
-        @ancestor = @ancestors.shift
+        @ancestor = FamilySearchApi.give_me_random_ancestor
         p 'doing a different ancestor' + @ancestor.inspect
-        @ancestors << @ancestor
         birth_place = @ancestor[:birth_place]
       end
       @stats = translate_ancestor_info_to_info_strings @ancestor

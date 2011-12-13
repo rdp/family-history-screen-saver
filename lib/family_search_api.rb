@@ -79,34 +79,39 @@ def get_me_all_urls_in_the_notes_for_this_person person_id
   urls
 end
 
-module FamilySearch
+module FamilySearchApi
   URL_MATCHER = /(((http|ftp|https):\/{2})+(([0-9a-z_-]+\.)+(aero|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|ac|ad|ae|af|ag|ai|al|am|an|ao|aq|ar|as|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|cr|cu|cv|cx|cy|cz|cz|de|dj|dk|dm|do|dz|ec|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|io|iq|ir|is|it|je|jm|jo|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mk|ml|mn|mn|mo|mp|mr|ms|mt|mu|mv|mw|mx|my|mz|na|nc|ne|nf|ng|ni|nl|no|np|nr|nu|nz|nom|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|ps|pt|pw|py|qa|re|ra|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw|arpa)(:[0-9]+)?((\/([~0-9a-zA-Z\#\+\%@\.\/_-]+))?(\?[0-9a-zA-Z\+\%@\/&\[\];=_-]+)?)?))\b/i
 
+  def self.give_me_random_ancestor
+    @@ancestors ||= give_me_all_ancestors_as_hashes
+    @@ancestors.sample
+  end
+
 # like [{:name, :relation_level, :gender, :birth_place, :birth_year}, {:name...}, ... ]
-def self.give_me_all_ancestors_as_hashes
-  $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
-  if File.exist? 'test_user'
-    user = File.read('test_user')
-    pass = File.read('test_pass')
-  else
-    user = SwingHelpers.get_user_input('enter your *dev* familysearch login:')
-    pass = SwingHelpers.get_password_input('Enter your password for the same:')
+  def self.give_me_all_ancestors_as_hashes
+    $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
+    if File.exist? 'test_user'
+      user = File.read('test_user')
+      pass = File.read('test_pass')
+    else
+      user = SwingHelpers.get_user_input('enter your *dev* familysearch login:')
+      pass = SwingHelpers.get_password_input('Enter your password for the same:')
+    end
+    
+    begin
+      authenticate_me($com, user, pass)
+    rescue RubyFsStack::Unauthorized, Errno::EAGAIN => e
+      SwingHelpers.show_blocking_message_dialog "login failed!" + e.to_s
+      raise
+    end
+    puts "login succeeded! #{user}"
+    my_pedigree = $com.familytree_v2.pedigree :me
+    # my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
+    starting = my_pedigree.root
+    all = []
+    add_person(starting, all, 0)
+    all
   end
-  
-  begin
-    authenticate_me($com, user, pass)
-  rescue RubyFsStack::Unauthorized, Errno::EAGAIN => e
-    SwingHelpers.show_blocking_message_dialog "login failed!" + e.to_s
-    raise
-  end
-  puts "login succeeded! #{user}"
-  my_pedigree = $com.familytree_v2.pedigree :me
-  # my_pedigree = com.familytree_v2.pedigree 'KWZF-CFW'
-  starting = my_pedigree.root
-  all = []
-  add_person(starting, all, 0)
-  all
-end
 
 end
 
