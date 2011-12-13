@@ -1,6 +1,5 @@
 require 'java'
 
-# bundled gems...
 for dir in Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib'] do
   $: << File.expand_path(dir)
 end
