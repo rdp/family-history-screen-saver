@@ -3,3 +3,4 @@ $: << '.'
 require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
 M::ShowImage.new
+sleep # see http://jira.codehaus.org/browse/JRUBY-4823
