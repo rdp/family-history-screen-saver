@@ -8,8 +8,8 @@ require 'authenticate'
 $com = FsCommunicator.new :domain => 'http://www.dev.usys.org', :handle_throttling => true
 
 def add_person person, array, level
-  if array.length > 20
-    p 'done downloading the first 20 people in your ancestry tree, stopping for now, for demo sake...'
+  if array.length > 100
+    p 'done downloading the first 100 people in your ancestry tree, stopping for now, for demo sake...'
     return
   end
   $stdout.print '.'

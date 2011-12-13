@@ -1,19 +1,16 @@
 == next ==
 
-  can request, use user credentials
-    an option "just run with test data" even for production :P
-
-  cache users' pedigree tree... :P
-    so they don't have to login every time...
-
   apply for real production API key
 
   make it distributable installerable?
 
   always display their relationship
-  update the title with what the picture/person is, too
   
 == random ==
+
+update the title with what the picture/person is, too
+cache users' pedigree tree... :P
+    so they don't have to login every time...
 
 don't download their whole tree, only the first x...or save it locally [?]
  or give it to them while you download too? yeah...
