@@ -120,7 +120,7 @@ module M
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        @image_title_prefix = 'Photo from near their birth:'
+        @image_title_prefix = 'Photo from near birthplace:'
       end
       download(url, 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
