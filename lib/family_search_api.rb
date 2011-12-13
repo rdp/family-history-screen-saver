@@ -126,7 +126,7 @@ end
 
 if $0 == __FILE__
   FamilySearchApi.warmup
-  p FamilySearchApi.give_me_random_ancestor
-  sleep 10
-  p FamilySearchApi.give_me_random_ancestor
+  p FamilySearchApi.give_me_random_ancestor # usually self
+  sleep 3
+  p FamilySearchApi.give_me_random_ancestor # hopefully not self
 end
