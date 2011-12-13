@@ -11,6 +11,7 @@ Jeweler::Tasks.new do |s|
     s.add_dependency 'andand'
     s.add_dependency 'linguistics'
     s.add_dependency 'ruby-fs-stack'
+    s.add_dependency 'jruby-openssl'
     s.add_dependency 'sane', '>= 0.25.0'
 end
 
