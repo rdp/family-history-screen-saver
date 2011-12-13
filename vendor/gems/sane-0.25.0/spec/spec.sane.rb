@@ -5,6 +5,7 @@ begin
   require 'spec/autorun' 
 rescue LoadError
   require 'rspec'
+  require 'rspec/autorun'
 end
 require 'fileutils'
 
@@ -30,6 +31,7 @@ describe Sane do
 
   it "should have working __DIR__" do
     __DIR__.should_not == nil
+    __DIR__[-1].should_not == '/' # not ending slash, that feels weird in real use.
   end
 
   it "should write to files" do
@@ -40,10 +42,6 @@ describe Sane do
      assert(File.binread(filename) == "abc\r\n") # it should have written it out *not* in binary mode
    end
    File.delete filename
-  end
-
-  it "should have __dir__ too" do
-    __dir__.should_not be_nil
   end
 
   class A
@@ -179,10 +177,29 @@ describe Sane do
   end
 
   it "should have an insert commas operator on numbers" do
-    1_000_000.comma_format.should == '1,000,000'
-    1_000_000.0.comma_format.should == '1,000,000.0'
-    1_000_000.0.comma_format.should == '1,000,000.0'
+    1_000_000.group_digits.should == '1,000,000'
+    1_000_000.0.group_digits.should == '1,000,000.0'
+    1_000_000.03555.group_digits.should == '1,000,000.03555'
   end
   
+  it "should have a string replace method" do
+    "abc".replace_all!("def").should == "def"
+  end
+  
+  it 'should have socket get_host_ips' do
+    Socket.get_local_ips[0].should_not be nil
+  end
+  
+  it 'should have present? method' do
+    assert !(''.present?)
+    assert 'a'.present?
+    assert !([].present?)
+    assert ['a'].present?
+    assert !(nil.present?)
+  end
+  
+  it 'should have Array#sample' do
+    [2].sample.should == 2  
+  end
   
 end
