@@ -3,14 +3,6 @@
 require 'rubygems'
 require 'flickraw'
 require 'date'
-
-module Enumerable
-  def sample
-   me = to_a
-   me[rand(me.length)]
-  end
-end
-
 class FlickrPhoto
 
   @@cache = {}
