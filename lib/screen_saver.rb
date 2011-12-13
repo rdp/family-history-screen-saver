@@ -94,7 +94,7 @@ module M
     
     def setup_ancestors
       p 'starting download of your ancestors\' information from new familysearch...'
-      FamilySearchApi.give_me_random_ancestor
+      FamilySearchApi.warmup
     end
     
     def pick_new_ancestor
