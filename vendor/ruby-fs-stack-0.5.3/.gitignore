@@ -1,8 +1,0 @@
-*.sw?
-.DS_Store
-coverage
-rdoc
-pkg
-examples/familytree_example_with_creds.rb
-examples/tree_crawl.rb
-*.gem
