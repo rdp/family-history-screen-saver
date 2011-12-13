@@ -15,7 +15,7 @@ use_fake_ancestry = false # for demo'ing, or testing :)
 
 if use_fake_ancestry
 
-  def give_me_all_ancestors_as_hashes    
+  def FamilySearch.give_me_all_ancestors_as_hashes
   #     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]    
   #     [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]    
      [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
@@ -94,7 +94,7 @@ module M
     
     def setup_ancestors
       p 'downloading your ancestors\' information from new familysearch...'
-      @ancestors = give_me_all_ancestors_as_hashes
+      @ancestors = FamilySearch.give_me_all_ancestors_as_hashes
       p 'done, here are your ancestors:', @ancestors
       @ancestors.shuffle!
       raise 'unable to find any ancestors within new familysearch for you?' unless @ancestors.length > 0
