@@ -72,12 +72,14 @@ class GedcomParser
        out[:birth_year] = $1
        out[:famc] = extract_single_element "FAMC", indi_block
        fams = extract_single_element "FAMS", indi_block
+       out[:fams] = fams
        if fams # no kids, I think, or died early, or non marriage
          relat_hash[fams] ||= []
          relat_hash[fams] << out
        end
        out
      }
+    add_computed_distance individs, relat_hash
     [individs, relat_hash]
   end
 end

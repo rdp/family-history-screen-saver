@@ -21,7 +21,7 @@ describe GedcomParser do
       first_person[name].should == value
     end
     
-    pp parsed_result[1]
+    pp parsed_result
     
   end
   
@@ -51,8 +51,6 @@ describe GedcomParser do
     out = GedcomParser.get_subsection_element "BIRT",  "DATE", test_level
     out.should == "18 Dec 1908"
   end
-  
-  it "should parse "
   
   it "should parse large files" do
     GedcomParser.parse_string(File.read('malin2.ged'))[0].length.should == 120
