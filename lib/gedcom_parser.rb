@@ -1,4 +1,3 @@
-require 'ostruct'
 
 class GedcomParser
   
@@ -17,9 +16,9 @@ class GedcomParser
      text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|big_block| 
        #2 SURN Pack
        #2 GIVN Wesley Malin 
-       out = OpenStruct.new
+       out = {}
        name_with_slashes = extract_single_element "NAME", big_block
-       out.name = name_with_slashes.gsub('/', '')
+       out[:name] = name_with_slashes.gsub('/', '')
        out
      }
   end

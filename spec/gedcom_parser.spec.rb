@@ -9,11 +9,13 @@ require_relative '../lib/gedcom_parser'
 
 
 describe GedcomParser do
-   it "should parse individuals" do
+   it "should parse gedcoms" do
     text = File.read('small.ged')
     parsed = GedcomParser.parse_string text
     first_person = parsed.first
-    first_person.name.should == "Wesley Malin Pack"
+    for name,value in {:name => "Wesley Malin Pack"}
+      first_person[name].should == value
+    end
   end
   
   it "should extract single elements" do
