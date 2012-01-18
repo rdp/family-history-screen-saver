@@ -37,7 +37,7 @@ class GedcomParser
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 
   def self.parse_string full_text
-     full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
+     individs = full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
        #2 SURN Pack
        #2 GIVN Wesley Malin 
        out = {}
@@ -56,5 +56,6 @@ class GedcomParser
        out[:birth_year] = $1
        out
      }
+    [individs, {}]
   end
 end

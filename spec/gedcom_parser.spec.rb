@@ -9,7 +9,7 @@ require_relative '../lib/gedcom_parser'
 describe GedcomParser do
    it "should parse gedcoms" do
     text = File.read('small.ged')
-    parsed = GedcomParser.parse_string text
+    parsed = GedcomParser.parse_string(text)[0]
     first_person = parsed.first
     for name,value in {
       :name => "Wesley Malin Pack",
@@ -43,7 +43,7 @@ describe GedcomParser do
   end
   
   it "should parse large files" do
-    GedcomParser.parse_string(File.read('malin2.ged')).length.should == 120
+    GedcomParser.parse_string(File.read('malin2.ged'))[0].length.should == 120
   end
     
   
