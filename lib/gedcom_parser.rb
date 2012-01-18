@@ -19,6 +19,12 @@ class GedcomParser
        out = {}
        name_with_slashes = extract_single_element "NAME", big_block
        out[:name] = name_with_slashes.gsub('/', '')
+       gender = extract_single_element "SEX", text
+       if gender == 'M'
+         out[:gender] = 'Male'
+       else
+         out[:gender] = 'Female'
+       end
        out
      }
   end

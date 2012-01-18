@@ -13,7 +13,7 @@ describe GedcomParser do
     text = File.read('small.ged')
     parsed = GedcomParser.parse_string text
     first_person = parsed.first
-    for name,value in {:name => "Wesley Malin Pack"}
+    for name,value in {:name => "Wesley Malin Pack",:gender => "Male"}
       first_person[name].should == value
     end
   end
