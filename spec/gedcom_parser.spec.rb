@@ -21,7 +21,7 @@ describe GedcomParser do
       first_person[name].should == value
     end
     
-    p parsed_result[1]
+    pp parsed_result[1]
     
   end
   
