@@ -13,12 +13,10 @@ describe GedcomParser do
     text = File.read('small.ged')
     parsed = GedcomParser.parse_string text
     first_person = parsed.first
-    first_person.name.should == "Lloyd Carlyle /Pack/ Sr"
+    first_person.name.should == "Wesley Malin Pack"
   end
   
   it "should extract single elements" do
-    require 'ruby-debug'
-    debugger
     GedcomParser.extract_single_element("GIVN", "\n2 GIVN Wesley Malin \n").should == "Wesley Malin"
   end
 end
