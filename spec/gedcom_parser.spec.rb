@@ -9,8 +9,8 @@ require_relative '../lib/gedcom_parser'
 describe GedcomParser do
    it "should parse gedcoms" do
     text = File.read('small.ged')
-    parsed = GedcomParser.parse_string(text)[0]
-    first_person = parsed.first
+    parsed_result = GedcomParser.parse_string(text)
+    first_person = parsed_result[0].first
     for name,value in {
       :name => "Wesley Malin Pack",
       :gender => "Male",
@@ -20,6 +20,9 @@ describe GedcomParser do
       }
       first_person[name].should == value
     end
+    
+    p parsed_result[1]
+    
   end
   
   it "should extract single elements" do
@@ -41,6 +44,8 @@ describe GedcomParser do
     out = GedcomParser.get_subsection_element "BIRT",  "DATE", test_level
     out.should == "18 Dec 1908"
   end
+  
+  it "should parse "
   
   it "should parse large files" do
     GedcomParser.parse_string(File.read('malin2.ged'))[0].length.should == 120

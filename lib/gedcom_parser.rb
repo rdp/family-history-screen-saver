@@ -55,6 +55,10 @@ class GedcomParser
        birth_date = get_subsection_element "BIRT", "DATE", indi_block
        birth_date =~ /(\d\d\d\d)/
        out[:birth_year] = $1
+       out[:famc] = extract_single_element "FAMC", indi_block
+       fams = extract_single_element "FAMS", indi_block
+       relat_hash[fams] ||= []
+       relat_hash[fams] << out
        out
      }
     [individs, relat_hash]
