@@ -9,6 +9,24 @@ class GedcomParser
     $1.strip
   end
   
+  def self.extract_level_down section_name, text
+    #1 BIRT
+    #2 DATE 18 Dec 1908
+    #2 PLAC Kamas, Summit, Utah, United States
+    out_lines = []
+    hit_line_yet = false
+    past_section = false
+    text.lines.select{|l|
+      if l =~ /^1 #{section_name}/
+        raise if hit_line_yet
+        hit_line_yet = true
+      elsif l !~ /^2/ && hit_line_yet
+        past_section = true
+      end
+      hit_line_yet && !past_section
+    }.join
+  end
+  
        [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 

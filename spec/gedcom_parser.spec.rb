@@ -21,4 +21,17 @@ describe GedcomParser do
   it "should extract single elements" do
     GedcomParser.extract_single_element("GIVN", "\n2 GIVN Wesley Malin \n").should == "Wesley Malin"
   end
+  
+  it "should extract levels" do
+    out = GedcomParser.extract_level_down "BIRT", <<-EOL
+0 IND
+1 BIRT
+2 DATE 18 Dec 1908
+2 PLAC Kamas, Summit, Utah, United States
+1 2BIRT
+    EOL
+    out.lines.to_a.length.should == 3
+  end
+    
+  
 end
