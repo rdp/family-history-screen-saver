@@ -36,6 +36,21 @@ class GedcomParser
   [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 
+  def self.add_computed_distance individs, relat_hash
+    me = individs[0]
+    compute_person_relation_level me, 0, relat_hash
+  end
+  
+  def self.compute_person_relation_level person, level, relat_hash
+    person[:relation_level] = level
+    parents = relat_hash[person[:famc]]
+    if parents # might not have any entered...
+      for parent in parents
+        compute_person_relation_level parent, level + 1, relat_hash
+      end
+    end
+  end
+  
   def self.parse_string full_text
      relat_hash = {}
      individs = full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
