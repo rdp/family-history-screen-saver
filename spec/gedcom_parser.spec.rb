@@ -14,7 +14,8 @@ describe GedcomParser do
     for name,value in {
       :name => "Wesley Malin Pack",
       :gender => "Male",
-      :birth_place => "Kamas, Summit, Utah, United States"
+      :birth_place => "Kamas, Summit, Utah, United States",
+      :birth_year => '1908'
       
       }
       first_person[name].should == value
@@ -39,6 +40,10 @@ describe GedcomParser do
     out.lines.to_a.length.should == 3
     out = GedcomParser.get_subsection_element "BIRT",  "DATE", test_level
     out.should == "18 Dec 1908"
+  end
+  
+  it "should parse large files" do
+    GedcomParser.parse_string(File.read('malin2.ged')).length.should == 120
   end
     
   

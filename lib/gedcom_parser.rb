@@ -50,6 +50,10 @@ class GedcomParser
          out[:gender] = 'Female'
        end
        out[:birth_place] = get_subsection_element "BIRT", "PLAC", indi_block
+      
+       birth_date = get_subsection_element "BIRT", "DATE", indi_block
+       birth_date =~ /(\d\d\d\d)/
+       out[:birth_year] = $1
        out
      }
   end
