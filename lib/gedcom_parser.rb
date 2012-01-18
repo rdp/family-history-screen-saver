@@ -5,8 +5,7 @@ class GedcomParser
   # extract "Pack"
   def self.extract_single_element element, text
     text =~ Regexp.new("\\d+ #{element} (.*)$")
-    raise element + text unless $1
-    $1.strip
+    $1 ? $1.strip : nil
   end
   
   def self.extract_level_down section_name, text
@@ -18,7 +17,9 @@ class GedcomParser
     past_section = false
     text.lines.select{|l|
       if l =~ /^1 #{section_name}/
-        raise if hit_line_yet
+        if hit_line_yet
+          raise 'has two? ' + section_name + text
+        end
         hit_line_yet = true
       elsif l !~ /^2/ && hit_line_yet
         past_section = true
@@ -27,22 +28,28 @@ class GedcomParser
     }.join
   end
   
-       [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
+  def self.get_subsection_element(section_name, element, text)
+     subsection = extract_level_down section_name, text
+     extract_single_element element, subsection
+  end
+  
+  [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 
-  def self.parse_string text
-     text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|big_block| 
+  def self.parse_string full_text
+     full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
        #2 SURN Pack
        #2 GIVN Wesley Malin 
        out = {}
-       name_with_slashes = extract_single_element "NAME", big_block
+       name_with_slashes = extract_single_element "NAME", indi_block
        out[:name] = name_with_slashes.gsub('/', '')
-       gender = extract_single_element "SEX", text
+       gender = extract_single_element "SEX", indi_block
        if gender == 'M'
          out[:gender] = 'Male'
        else
          out[:gender] = 'Female'
        end
+       out[:birth_place] = get_subsection_element "BIRT", "PLAC", indi_block
        out
      }
   end
