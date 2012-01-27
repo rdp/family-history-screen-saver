@@ -41,8 +41,14 @@ class GedcomParser
     compute_person_relation_level me, 0, relat_hash, family_level_hash
 	for person in individs
 	  # TODO this doesn't go *down* the tree very well, I don't think...hmm...which may be ok for now...
-	  if !person[:relation_level] && (level = family_level_hash[person[:fams]])
-	    compute_person_relation_level person, level, relat_hash, family_level_hash
+	  if !person[:relation_level] 
+	    if level = family_level_hash[person[:fams]]
+		  # a spouse
+	      compute_person_relation_level person, level, relat_hash, family_level_hash
+	    elsif level = family_level_hash[person[:famc]]
+		  # a child
+	      compute_person_relation_level person, level-1, relat_hash, family_level_hash
+		end
 	  end
 	end
   end

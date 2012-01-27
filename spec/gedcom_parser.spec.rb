@@ -7,13 +7,13 @@ require_relative '../lib/gedcom_parser'
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 
 describe GedcomParser do
-  def parse_gedcom
+  def parse_small_gedcom
     text = File.read('small.ged')
     GedcomParser.parse_string(text)
   end
   
   it "should parse first entry in a gedcom" do
-    parsed_result = parse_gedcom
+    parsed_result = parse_small_gedcom
     first_person = parsed_result[0].first
     for name,value in {
       :name => "Wesley Malin Pack",
@@ -27,7 +27,7 @@ describe GedcomParser do
   end
   
   it "should add in relation levels for everybody" do
-    parsed_result = parse_gedcom
+    parsed_result = parse_small_gedcom
 	people = parsed_result[0]
 	pp parsed_result
 	for person in people
