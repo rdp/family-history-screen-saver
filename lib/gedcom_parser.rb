@@ -36,29 +36,29 @@ class GedcomParser
   [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
 
-  def self.add_computed_distance individs, relat_hash
+  def self.add_computed_distance individs, relat_hash, family_level_hash
     me = individs[0]
-	family_level_hash = {}
     compute_person_relation_level me, 0, relat_hash, family_level_hash
 	for person in individs
+	  # TODO this doesn't go *down* the tree very well, I don't think...hmm...which may be ok for now...
 	  if !person[:relation_level] && (level = family_level_hash[person[:fams]])
 	    compute_person_relation_level person, level, relat_hash, family_level_hash
 	  end
 	end
   end
   
+  private
   def self.compute_person_relation_level person, level, relat_hash, family_level_hash
     person[:relation_level] = level
-	if person[:fams] # dunno if this is a valid test for "real" gedcoms but...who knows...
-	  # save away the level here.
+	if person[:fams] # dunno if this is a valid test for "real" gedcoms but...who knows how messed up they might get...
+	  # save their family level, for spouses later
 	  if old_value = family_level_hash[person[:fams]]
-	    raise "mismatch #{old_value} != #{level}" unless old_value == level # sanity check
+	    raise "mismatch #{old_value} != #{level}" unless old_value == level
 	  else
 	    family_level_hash[person[:fams]] = level
 	  end
 	end
-    parents = relat_hash[person[:famc]]
-    if parents # might not have any entered...
+    if parents = relat_hash[person[:famc]]
       for parent in parents
 	    unless parent[:relation_level]
           compute_person_relation_level parent, level + 1, relat_hash, family_level_hash
@@ -67,6 +67,7 @@ class GedcomParser
     end
   end
   
+  public
   def self.parse_string full_text
      relat_hash = {}
      individs = full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
@@ -95,7 +96,8 @@ class GedcomParser
        end
        out
      }
-    add_computed_distance individs, relat_hash
-    [individs, relat_hash]
+	fam_hash = {}
+    add_computed_distance individs, relat_hash, fam_hash
+    [individs, relat_hash, fam_hash]
   end
 end

@@ -38,9 +38,7 @@ describe GedcomParser do
   it "should compute relationship distance right" do
     individs = [{:name => 'me', :famc => 'parents1'}, {:name => 'dad1', :famc => 'parents2'}, {:name => 'gdad1', :famc => 'parents3_nonexist'}]
     relat_hash = {"parents1" => [individs[1]], "parents2" => [individs[2]]}
-	require 'ruby-debug'
-	debugger
-    GedcomParser.add_computed_distance individs, relat_hash
+    GedcomParser.add_computed_distance individs, relat_hash, {}
     individs.map{|i| i[:relation_level]}.should == [0,1,2]
   end
   
