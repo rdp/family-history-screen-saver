@@ -3,10 +3,8 @@ require 'sane'
 require 'rspec/autorun'
 require_relative '../lib/gedcom_parser'
 
-     [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
-        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
-
 describe GedcomParser do
+
   def parse_small_gedcom
     text = File.read('small.ged')
     GedcomParser.parse_string(text)
@@ -20,18 +18,17 @@ describe GedcomParser do
       :gender => "Male",
       :birth_place => "Kamas, Summit, Utah, United States",
       :birth_year => '1908',
-      :relation_level => 0
-      }
-      first_person[name].should == value
+      :relation_level => 1   }
+        first_person[name].should == value
     end
   end
   
-  it "should add in relation levels for everybody" do
+  it "should add in relation levels for everybody, and non negative" do
     parsed_result = parse_small_gedcom
 	people = parsed_result[0]
-	pp parsed_result
 	for person in people
 	  raise person.inspect unless person[:relation_level]
+	  raise if person[:relation_level] < 0
 	end
   end
   

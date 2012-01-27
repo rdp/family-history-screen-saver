@@ -48,9 +48,19 @@ class GedcomParser
 	    elsif level = family_level_hash[person[:famc]]
 		  # a child
 	      compute_person_relation_level person, level-1, relat_hash, family_level_hash
+		else
+		  #puts 'no relation level please report' # happens too frequently unfortunately...
 		end
 	  end
 	end
+	
+	min = individs.map{|i| i[:relation_level] || 0}.min
+	if min < 0
+	  for person in individs
+	    person[:relation_level] -= min if person[:relation_level]
+	  end
+	end
+	
   end
   
   private
