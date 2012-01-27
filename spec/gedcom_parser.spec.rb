@@ -28,7 +28,9 @@ describe GedcomParser do
   
   it "should add in relation levels for everybody" do
     parsed_result = parse_gedcom
-	for person in parsed_result[0]
+	people = parsed_result[0]
+	pp parsed_result
+	for person in people
 	  raise person.inspect unless person[:relation_level]
 	end
   end
@@ -36,6 +38,8 @@ describe GedcomParser do
   it "should compute relationship distance right" do
     individs = [{:name => 'me', :famc => 'parents1'}, {:name => 'dad1', :famc => 'parents2'}, {:name => 'gdad1', :famc => 'parents3_nonexist'}]
     relat_hash = {"parents1" => [individs[1]], "parents2" => [individs[2]]}
+	require 'ruby-debug'
+	debugger
     GedcomParser.add_computed_distance individs, relat_hash
     individs.map{|i| i[:relation_level]}.should == [0,1,2]
   end

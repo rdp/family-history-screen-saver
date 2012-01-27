@@ -38,15 +38,31 @@ class GedcomParser
 
   def self.add_computed_distance individs, relat_hash
     me = individs[0]
-    compute_person_relation_level me, 0, relat_hash
+	family_level_hash = {}
+    compute_person_relation_level me, 0, relat_hash, family_level_hash
+	for person in individs
+	  if !person[:relation_level] && (level = family_level_hash[person[:fams]])
+	    compute_person_relation_level person, level, relat_hash, family_level_hash
+	  end
+	end
   end
   
-  def self.compute_person_relation_level person, level, relat_hash
+  def self.compute_person_relation_level person, level, relat_hash, family_level_hash
     person[:relation_level] = level
+	if person[:fams] # dunno if this is a valid test for "real" gedcoms but...who knows...
+	  # save away the level here.
+	  if old_value = family_level_hash[person[:fams]]
+	    raise "mismatch #{old_value} != #{level}" unless old_value == level # sanity check
+	  else
+	    family_level_hash[person[:fams]] = level
+	  end
+	end
     parents = relat_hash[person[:famc]]
     if parents # might not have any entered...
       for parent in parents
-        compute_person_relation_level parent, level + 1, relat_hash
+	    unless parent[:relation_level]
+          compute_person_relation_level parent, level + 1, relat_hash, family_level_hash
+		end
       end
     end
   end
