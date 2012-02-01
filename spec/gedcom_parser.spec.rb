@@ -59,9 +59,11 @@ describe GedcomParser do
     out.should == "18 Dec 1908"
   end
   
-  it "should parse large files" do
-    GedcomParser.parse_string(File.read('malin2.ged'))[0].length.should == 120
-  end
-    
+  context "parsing large files" do
+    malin = GedcomParser.parse_string(File.read('malin2.ged'))
+    it "should parse large files" do
+	  malin[0].length.should == 120
+    end
+  end    
   
 end
