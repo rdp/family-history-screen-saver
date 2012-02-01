@@ -14,15 +14,18 @@ end
 
 if ARGV[0] == '--fs-api'
   setup_fs_api_ancestors
-  M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
+  instance = M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
  elsif ARGV[0] == '--gedcom'
   require_relative '../lib/jruby-swing-helpers/swing_helpers'
   filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
   require 'gedcom_parser'
   got = GedcomParser.parse_file filename
-  M::ShowImage.new { got[0].sample.merge(:image_note_urls => []) }
+  instance = M::ShowImage.new { got[0].sample.merge(:image_note_urls => []) }
 else
   raise 'need to specify type'
 end
 
-sleep # see http://jira.codehaus.org/browse/JRUBY-4823
+while(instance.is_showing)
+ sleep 1# see http://jira.codehaus.org/browse/JRUBY-4823 
+end
+java::lang::System.exit 0 # yikes!

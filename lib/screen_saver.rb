@@ -34,12 +34,16 @@ module M
   Font
   Color
   RenderingHints
+  KeyboardFocusManager
   
   class ShowImage < JFrame
     include java.awt.event.ActionListener
     
     def initialize &block_for_single_ancestor
       super
+      manager = KeyboardFocusManager.getCurrentKeyboardFocusManager
+      self.defaultCloseOperation = M::JFrame::DISPOSE_ON_CLOSE 
+	  manager.addKeyEventDispatcher { close }
 	  @proc_to_give_me_next_ancestor = block_for_single_ancestor
       set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
       @timer = nil
@@ -74,7 +78,6 @@ module M
           switch_image_same_ancestor_timer.restart()
         }
       end
-      self.defaultCloseOperation = M::JFrame::EXIT_ON_CLOSE
 
       # faux full screen
       # frame.setUndecorated(true) ??
@@ -102,7 +105,7 @@ module M
     def pick_and_download_new_image_for_current_ancestor
       if(@ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
         url = @ancestor[:image_note_urls].sample
-        p 'doing local', url
+        p 'doing image from notes', url
         new_title = url.split('/')[-1].split('.')[0..-2].join('.')
         @image_title_prefix = ''
       else
@@ -110,7 +113,7 @@ module M
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        @image_title_prefix = 'Photo from near birthplace:'
+        @image_title_prefix = "Photo from near #{@ancestor[:name].split.first}'s birthplace:"
       end
       download(url, 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
@@ -152,33 +155,35 @@ module M
     
     # returns a java Image object from currently cached image...this currently might not be too cpu friendly though... :P
     def get_floater_image
-      # LODO cache it...
+      # LODO cache this...if expensive :P
       floater_height = 450
+	  floater_width = 1000
       
-      image = BufferedImage.new(1000, floater_height, BufferedImage::TYPE_INT_RGB);
+      image = BufferedImage.new(floater_width, floater_height, BufferedImage::TYPE_INT_RGB);
       
       g = image.createGraphics()
       # by default it's all black...I think.
       g.setColor( Color::WHITE )
-      g.fillRect(0,0,1000,floater_height)
+      g.fillRect(0,0,floater_width,floater_height+200)
       unless @img
         p 'image not downloaded yet, perhaps? -- not drawing it...'
         return image
       end
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
-      g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 30)
-      image_height = [@img.height, floater_height - 90].min
-      g.drawImage(@img, 10, 60, @img.width, image_height, nil) # x, y, width, height, observer
-      # now the text around it
+      g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 60)
+      image_height = [@img.height, floater_height - 90].min # LODO am I getting full res images?
+	  
+      g.drawImage(@img, 10, 90, @img.width, image_height, nil) # x, y, width, height, observer LODO does this stretch things weirdly?
+      # now the text around the image
       # switch every 20 seconds or so, eh?
       idx = (Time.now.to_i/3) % @stats.length
       if Time.now - @start < 5
         # force beginning 0 if we're at the start of a run
         idx = 0
       end
-      g.drawString(@name, @img.width + 30, 100)
-      g.drawString(@stats[idx], @img.width + 10, 150)
+      g.drawString(@name, @img.width + 30, 130)
+      g.drawString(@stats[idx], @img.width + 30, 180)
       g.dispose
       image
     end
@@ -187,14 +192,14 @@ module M
       # TODO when there's a change in image, clear the whole screen [?] and draw it once in the bottom right [?] maybe transparent? maybe avoid overwriting?
       # g.draw_image(@img, self.width - @img.width, self.height - @img.height, self) if @img
       # it wants to float "smoothly" across the pseudo screen
-      ratio = width.to_f/height()
+      ratio = width().to_f/height()
       new_x = (Time.now.to_f*35) % (width-700) # not let it go too far right
-      new_y = (height() - (Time.now.to_f*35)) % (height-250)
+      new_y = (height() - (Time.now.to_f*35)) % (height-350) # don't go too far down
       g.translate(new_x, new_y)
       g.rotate(0.2, 0, 0)
       g.drawImage(get_floater_image,0,0,self)
       unless @timer
-        duration = 0.02*1000
+        duration = 0.03*1000
         @timer = javax.swing.Timer.new(duration, self)
         @timer.start
       end
