@@ -9,7 +9,7 @@ class GedcomParser
   end
   
   def self.extract_single_elements element, text
-    ''
+    text.scan(Regexp.new("\\d+ #{element} (.*)$")).map{|element| element[0].strip}
   end
   
   def self.extract_level_down section_name, text
