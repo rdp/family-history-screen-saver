@@ -93,7 +93,7 @@ module FamilySearchApi
   
   def self.give_me_random_ancestor
     p @@ancestors.length
-    @@ancestors.sample
+    @@ancestors.sample # constantly growing...
   end
 
 # like [{:name, :relation_level, :gender, :birth_place, :birth_year}, {:name...}, ... ]

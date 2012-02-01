@@ -1,12 +1,28 @@
 puts 'Loading Family Tree Screen Saver...'
-$: << '.'
-require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
-    def setup_fs_api_ancestors
-      p 'starting download of your ancestors\' information from new familysearch...'
-      FamilySearchApi.warmup
-    end
+for dir in Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib'] do
+  $: << File.expand_path(dir)
+end
+$: << './lib'
+require 'sane'
+require_relative '../lib/screen_saver.rb'
 
-setup_fs_api_ancestors
-M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
+def setup_fs_api_ancestors
+  p 'starting download of your ancestors\' information from new familysearch...'
+  FamilySearchApi.warmup # prompts for creds too
+end
+
+if ARGV[0] == '--fs-api'
+  setup_fs_api_ancestors
+  M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
+ elsif ARGV[0] == '--gedcom'
+  require_relative '../lib/jruby-swing-helpers/swing_helpers'
+  filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
+  require 'gedcom_parser'
+  got = GedcomParser.parse_file filename
+  M::ShowImage.new { got[0].sample }
+else
+  raise 'need to specify type'
+end
+
 sleep # see http://jira.codehaus.org/browse/JRUBY-4823

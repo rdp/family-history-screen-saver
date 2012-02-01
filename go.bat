@@ -1,1 +1,1 @@
-j bin\screen_saver
+j bin\screen_saver --gedcom

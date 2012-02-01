@@ -1,11 +1,5 @@
 require 'java'
 
-for dir in Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib'] do
-  $: << File.expand_path(dir)
-end
-$: << './lib'
-require 'sane'
-
 require 'flickr_photo' # my file
 require 'family_search_api' 
 require_relative 'jruby-swing-helpers/swing_helpers'
@@ -44,9 +38,9 @@ module M
   class ShowImage < JFrame
     include java.awt.event.ActionListener
     
-    def initialize proc_to_give_me_next_ancestor
+    def initialize &block_for_single_ancestor
       super
-	  @proc_to_give_me_next_ancestor = proc_to_give_me_next_ancestor
+	  @proc_to_give_me_next_ancestor = block_for_single_ancestor
       set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
       @timer = nil
       @start = Time.now
@@ -64,7 +58,7 @@ module M
           begin
             pick_and_download_new_image_for_current_ancestor 
           rescue Exception => e
-            SwingHelpers.show_blocking_message_dialog "flickr failed?:" + e.to_s
+            SwingHelpers.show_blocking_message_dialog "flickr failed?:" + e.to_s + e.backtrace.inspect
             raise
           end
         } # do it in the background instead of in the one swing thread <sigh>
