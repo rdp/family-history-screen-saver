@@ -17,7 +17,15 @@ if ARGV[0] == '--fs-api'
   instance = M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
  elsif ARGV[0] == '--gedcom'
   require_relative '../lib/jruby-swing-helpers/swing_helpers'
-  filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
+  require_relative '../lib/jruby-swing-helpers/storage'
+  storage = Storage.new('screen_saver')
+  filename = storage['always_use_path']
+  if !filename
+    filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
+    if SwingHelpers.show_select_buttons_prompt('Would you like to make this file the default to use from now on?') == :yes
+	   storage['always_use_path'] = filename
+    end
+  end
   require 'gedcom_parser'
   got = GedcomParser.parse_file filename
   instance = M::ShowImage.new { got[0].sample.merge(:image_note_urls => []) }
