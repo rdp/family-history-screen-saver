@@ -45,15 +45,20 @@ class GedcomParser
     compute_person_relation_level me, 0, relat_hash, family_level_hash
 	for person in individs
 	  # TODO this doesn't go *down* the tree very well, I don't think...hmm...which may be ok for now...
-	  if !person[:relation_level] 
-	    if level = family_level_hash[person[:fams]]
-		  # a spouse
-	      compute_person_relation_level person, level, relat_hash, family_level_hash
-	    elsif level = family_level_hash[person[:famc]]
-		  # a child
-	      compute_person_relation_level person, level-1, relat_hash, family_level_hash
-		else
-		  #puts 'no relation level please report' # happens too frequently unfortunately...
+	  if !person[:relation_level]
+	    for fams in person[:fams_array]
+	      if level = family_level_hash[fams]
+		    # a spouse
+	        compute_person_relation_level person, level, relat_hash, family_level_hash
+		  end
+		end
+		if !person[:relation_level] 
+		  if level = family_level_hash[person[:famc]]
+		    # a child, we have its family
+	        compute_person_relation_level person, level-1, relat_hash, family_level_hash
+		  else
+		    #puts 'no relation level please report' # happens too frequently to report...
+		  end
 		end
 	  end
 	end
@@ -70,12 +75,12 @@ class GedcomParser
   private
   def self.compute_person_relation_level person, level, relat_hash, family_level_hash
     person[:relation_level] = level
-	if person[:fams] # dunno if this is a valid test for "real" gedcoms but...who knows how messed up they might get...
-	  # save their family level, for spouses later
-	  if old_value = family_level_hash[person[:fams]]
+	
+	for person_fams in person[:fams_array]	
+	  if old_value = family_level_hash[person_fams]
 	    raise "mismatch #{old_value} != #{level}" unless old_value == level
 	  else
-	    family_level_hash[person[:fams]] = level
+	    family_level_hash[person_fams] = level
 	  end
 	end
     if parents = relat_hash[person[:famc]]
@@ -111,13 +116,10 @@ class GedcomParser
        birth_date =~ /(\d\d\d\d)/
        out[:birth_year] = $1
        out[:famc] = extract_single_element "FAMC", indi_block
-       fams = extract_single_element "FAMS", indi_block
-       out[:fams] = fams
-       if fams
+       out[:fams_array] = extract_single_elements "FAMS", indi_block
+       for fams in out[:fams_array] # if any
          relat_hash[fams] ||= []
          relat_hash[fams] << out
-       else
-	     # absent for whatever reason
 	   end
        out
      }

@@ -6,8 +6,7 @@ require_relative '../lib/gedcom_parser'
 describe GedcomParser do
 
   def parse_small_gedcom
-    text = File.read('small.ged')
-    GedcomParser.parse_string(text)
+    GedcomParser.parse_file 'small.ged'
   end
   
   it "should parse first entry in a gedcom" do
@@ -33,7 +32,7 @@ describe GedcomParser do
   end
   
   it "should compute relationship distance right" do
-    individs = [{:name => 'me', :famc => 'parents1'}, {:name => 'dad1', :famc => 'parents2'}, {:name => 'gdad1', :famc => 'parents3_nonexist'}]
+    individs = [{:name => 'me', :famc => 'parents1', :fams_array => []}, {:name => 'dad1', :famc => 'parents2', :fams_array => []}, {:name => 'gdad1', :famc => 'parents3_nonexist', :fams_array => []}]
     relat_hash = {"parents1" => [individs[1]], "parents2" => [individs[2]]}
     GedcomParser.add_computed_distance individs, relat_hash, {}
     individs.map{|i| i[:relation_level]}.should == [0,1,2]
