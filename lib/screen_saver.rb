@@ -48,10 +48,10 @@ module M
       set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
       @timer = nil
       @start = Time.now
-      pick_new_ancestor
-      
-	  # get an image before starting...slightly prettier
-      pick_and_download_new_image_for_current_ancestor 
+      pick_new_ancestor      
+	  # get an image before starting...which is slightly prettier
+      pick_and_download_new_image_for_current_ancestor
+	  
       switch_image_same_ancestor_timer = javax.swing.Timer.new(10*1000, nil) # switch images every 10s
       switch_image_same_ancestor_timer.start
       switch_image_same_ancestor_timer.add_action_listener do |e|
@@ -88,7 +88,6 @@ module M
     
     
     def pick_new_ancestor
-      # rotate...
       birth_place = nil
       until birth_place
         @ancestor = @proc_to_give_me_next_ancestor.call
