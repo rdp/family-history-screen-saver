@@ -20,7 +20,7 @@ if ARGV[0] == '--fs-api'
   filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
   require 'gedcom_parser'
   got = GedcomParser.parse_file filename
-  M::ShowImage.new { got[0].sample }
+  M::ShowImage.new { got[0].sample.merge(:image_note_urls => []) }
 else
   raise 'need to specify type'
 end

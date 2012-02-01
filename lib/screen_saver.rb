@@ -49,7 +49,7 @@ module M
       begin
         pick_and_download_new_image_for_current_ancestor 
       rescue => e
-        p 'download failed?' + e.to_s # ignore, so basically re-use the old image
+        p 'download failed?' + e.to_s + e.backtrace.inspect # ignore, so basically re-use the old image
       end
       switch_image_same_ancestor_timer = javax.swing.Timer.new(5*1000, nil)
       switch_image_same_ancestor_timer.start

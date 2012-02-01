@@ -16,7 +16,7 @@ describe GedcomParser do
       :name => "Wesley Malin Pack",
       :gender => "Male",
       :birth_place => "Kamas, Summit, Utah, United States",
-      :birth_year => '1908',
+      :birth_year => 1908,
       :relation_level => 1   }
         first_person[name].should == value
     end
