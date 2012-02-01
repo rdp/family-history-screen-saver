@@ -39,9 +39,13 @@ describe GedcomParser do
     individs.map{|i| i[:relation_level]}.should == [0,1,2]
   end
   
-  it "should extract single elements" do
+  it "should extract single element" do
     GedcomParser.extract_single_element("GIVN", "\n2 GIVN Wesley Malin \n").should == "Wesley Malin"
     GedcomParser.extract_single_element("GIVN", "\n \n").should == nil # not found is ok too
+  end
+  
+  it "should extract single elements" do
+    GedcomParser.extract_single_elements("GIVN", "\n2 GIVN Wesley Malin \n2 GIVN yo").should == ["Wesley Malin", 'yo']    
   end
   
   it "should extract levels" do
@@ -59,11 +63,24 @@ describe GedcomParser do
     out.should == "18 Dec 1908"
   end
   
+  it "should parse dual marriage right" do
+    two = GedcomParser.parse_file 'small_two_marriage.ged'
+	for person in two[0]
+	  raise person.inspect unless person[:relation_level]
+	end
+  end
+  
   context "parsing large files" do
     malin = GedcomParser.parse_string(File.read('malin2.ged'))
     it "should parse large files" do
 	  malin[0].length.should == 120
     end
+	it "should add families in" do
+	   File.write 'malin_inspect', malin.pretty_inspect
+		for person in malin[0]
+	      raise person.inspect unless person[:relation_level]
+		end
+	end
   end    
   
 end

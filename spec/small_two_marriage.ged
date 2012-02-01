@@ -1,0 +1,201 @@
+﻿0 HEAD
+1 SOUR PAF
+2 NAME Personal Ancestral File
+2 VERS 5.2.18.0
+2 CORP The Church of Jesus Christ of Latter-day Saints
+3 ADDR 50 East North Temple Street
+4 CONT Salt Lake City, UT 84150
+4 CONT USA
+1 DEST Other
+1 DATE 1 Jul 2011
+2 TIME 17:14:30
+1 FILE malin2.ged
+1 GEDC
+2 VERS 5.5
+2 FORM LINEAGE-LINKED
+1 CHAR UTF-8
+1 LANG English
+1 SUBM @SUB1@
+0 @SUB1@ SUBM
+1 NAME roger pack
+1 ADDR a place
+2 CONT orem, ut
+0 @I1@ INDI
+1 NAME Wesley Malin /Pack/
+2 SURN Pack
+2 GIVN Wesley Malin
+1 SEX M
+1 BIRT
+2 DATE 18 Dec 1908
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 22 Aug 1993
+2 PLAC Santa Rosa, Sonoma, California, United States
+1 BURI
+2 DATE Aug 1993
+2 PLAC Richfield, Sevier, Utah, United States
+1 _UID 55206282781F3B44A807C7EFDD5146236BA9
+1 FAMS @F1@
+1 FAMS @F-test@
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:50
+0 @I2@ INDI
+1 NAME Helen /Heppler/
+2 SURN Heppler
+2 GIVN Helen
+1 SEX F
+1 BIRT
+2 DATE 29 Dec 1909
+2 PLAC Richfield, Sevier, Utah, United States
+1 DEAT
+2 DATE 27 Jan 2007
+2 PLAC Santa Rosa, Sonoma, California, United States
+1 BURI
+2 PLAC Richfield, Sevier, Utah, United States
+1 _UID BF15484391EA9245833ED0554EB593CBF818
+1 FAMS @F-test@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:51
+0 @I3@ INDI
+1 NAME Melvin Deloy /Pack/
+2 SURN Pack
+2 GIVN Melvin Deloy
+1 SEX M
+1 _UID F0C49A73C1783747AB2FE06A3EE062001CE7
+1 FAMS @F5@
+1 FAMC @F1@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:51
+0 @I4@ INDI
+1 NAME Don Elbert /Pack/
+2 SURN Pack
+2 GIVN Don Elbert
+1 SEX M
+1 BIRT
+2 DATE 1 May 1873
+2 PLAC Salt Lake City, Salt Lake, Utah, United States
+1 DEAT
+2 DATE 22 Dec 1927
+1 BURI
+2 DATE 26 Dec 1927
+2 PLAC Glendale, Los Angeles, California, United States
+1 _UID B5C922D2DEFF3E4196DDC9E0017F3331CE98
+1 FAMS @F2@
+1 FAMC @F3@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:51
+0 @I5@ INDI
+1 NAME Harriet Emily /Malin/
+2 SURN Malin
+2 GIVN Harriet Emily
+1 SEX F
+1 BIRT
+2 DATE 5 Aug 1873
+2 PLAC Rockport Twp, Summit, Utah, United States
+1 DEAT
+2 DATE 3 May 1967
+1 BURI
+2 DATE 5 May 1967
+2 PLAC Glendale, Los Angeles, California, United States
+1 _UID 2F916CE7245AE040A567BEAD3AA42A2E5EC4
+1 FAMS @F2@
+1 FAMC @F4@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:55
+0 @I6@ INDI
+1 NAME Lloyd Carlyle /Pack/ Sr
+2 SURN Pack
+2 GIVN Lloyd Carlyle
+2 NSFX Sr
+1 SEX M
+1 BIRT
+2 DATE 30 Jan 1914
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 16 Mar 1994
+1 BURI
+2 DATE 19 Mar 1994
+2 PLAC Saint George, Washington, Utah, United States
+1 _UID 40CF052A385CEC4391ED3FC57909C6B58046
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:53
+0 @I7@ INDI
+1 NAME Paul Malin /Pack/
+2 SURN Pack
+2 GIVN Paul Malin
+1 SEX M
+1 BIRT
+2 DATE 14 Mar 1907
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 8 Aug 1992
+1 _UID 7B3577AC67BECB49A0A4CDC5CFAE0BD741DC
+1 FAMS @F8@
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:53
+0 @I8@ INDI
+1 NAME Alberta Fern /Pack/
+2 SURN Pack
+2 GIVN Alberta Fern
+1 SEX F
+1 BIRT
+2 DATE 4 Jan 1901
+2 PLAC Kamas, Summit, Utah, United States
+1 CHR
+2 DATE 29 Mar 1901
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 4 Oct 1984
+1 _UID DEFD5E42F3ECCA4785DF79C5A5A8D1D70211
+1 FAMS @F9@
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:53
+0 @I9@ INDI
+1 NAME Alice Claire /Pack/
+2 SURN Pack
+2 GIVN Alice Claire
+1 SEX F
+1 BIRT
+2 DATE 28 Jun 1899
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 21 May 1983
+2 PLAC Tustin, Santa Anna, CA
+1 BURI
+2 DATE 25 May 1983
+2 PLAC Inglewood, Taranaki, North Island, New Zealand
+1 _UID F172B95A7E445944A6E741AE3671463A787E
+1 FAMS @F16@
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:55
+0 @I10@ INDI
+1 NAME Ione /Pack/
+2 SURN Pack
+2 GIVN Ione
+1 SEX F
+1 BIRT
+2 DATE 16 Aug 1897
+2 PLAC Kamas, Summit, Utah, United States
+1 DEAT
+2 DATE 16 Aug 1897
+1 _UID A80A3278CC259744A45D1DFF7F3D64F85D22
+1 FAMC @F2@
+1 CHAN
+2 DATE 1 Jul 2011
+3 TIME 17:03:55
+0 @I11@ INDI
+0 TRLR

@@ -8,6 +8,10 @@ class GedcomParser
     $1 ? $1.strip : nil
   end
   
+  def self.extract_single_elements element, text
+    ''
+  end
+  
   def self.extract_level_down section_name, text
     #1 BIRT
     #2 DATE 18 Dec 1908
@@ -84,6 +88,9 @@ class GedcomParser
   end
   
   public
+  def self.parse_file filename
+    parse_string File.read(filename)
+  end
   def self.parse_string full_text
      relat_hash = {}
      individs = full_text.split(/.*INDI.*/).reject{|t| t =~ /HEAD|TRLR/}.map{|indi_block| 
@@ -106,10 +113,12 @@ class GedcomParser
        out[:famc] = extract_single_element "FAMC", indi_block
        fams = extract_single_element "FAMS", indi_block
        out[:fams] = fams
-       if fams # no kids, I think, or died early, or non marriage
+       if fams
          relat_hash[fams] ||= []
          relat_hash[fams] << out
-       end
+       else
+	     # absent for whatever reason
+	   end
        out
      }
 	fam_hash = {}
