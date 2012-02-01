@@ -50,19 +50,17 @@ module M
       @start = Time.now
       pick_new_ancestor
       
-      begin
-        pick_and_download_new_image_for_current_ancestor 
-      rescue => e
-        p 'download failed?' + e.to_s + e.backtrace.inspect # ignore, so basically re-use the old image
-      end
-      switch_image_same_ancestor_timer = javax.swing.Timer.new(5*1000, nil)
+	  # get an image before starting...slightly prettier
+      pick_and_download_new_image_for_current_ancestor 
+      switch_image_same_ancestor_timer = javax.swing.Timer.new(10*1000, nil) # switch images every 10s
       switch_image_same_ancestor_timer.start
       switch_image_same_ancestor_timer.add_action_listener do |e|
-        Thread.new { 
+        @download_thread.join if @download_thread # don't download 2 images at once, for slower connections...
+		@download_thread = Thread.new { 
           begin
             pick_and_download_new_image_for_current_ancestor 
           rescue Exception => e
-            SwingHelpers.show_blocking_message_dialog "flickr failed?:" + e.to_s + e.backtrace.inspect
+            SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s + e.backtrace.inspect
             raise
           end
         } # do it in the background instead of in the one swing thread <sigh>
@@ -99,7 +97,8 @@ module M
       end
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
-      # too annoying, but does preserve continuity... @img = nil
+      # too annoying, but does preserve continuity... 
+	  # @img = nil
     end
     
     def pick_and_download_new_image_for_current_ancestor
@@ -172,7 +171,7 @@ module M
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 60)
-      image_height = [@img.height, floater_height - 90].min # LODO am I getting full res images?
+      image_height = [@img.height, floater_height - 95].min # LODO am I getting full res images?
 	  
       g.drawImage(@img, 10, 90, @img.width, image_height, nil) # x, y, width, height, observer LODO does this stretch things weirdly?
       # now the text around the image
