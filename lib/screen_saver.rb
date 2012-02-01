@@ -49,8 +49,10 @@ module M
       @timer = nil
       @start = Time.now
       pick_new_ancestor      
+	  dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
 	  # get an image before starting...which is slightly prettier
       pick_and_download_new_image_for_current_ancestor
+	  dialog.close
 	  
       switch_image_same_ancestor_timer = javax.swing.Timer.new(10*1000, nil) # switch images every 10s
       switch_image_same_ancestor_timer.start
@@ -91,13 +93,13 @@ module M
       birth_place = nil
       until birth_place
         @ancestor = @proc_to_give_me_next_ancestor.call
-        p 'doing a different ancestor' + @ancestor.inspect
+        p 'doing a next/different ancestor' + @ancestor.inspect
         birth_place = @ancestor[:birth_place]
       end
       @stats = translate_ancestor_info_to_info_strings @ancestor
       @name = @stats.shift
       # too annoying, but does preserve continuity... 
-	  # @img = nil
+	  @img = nil
     end
     
     def pick_and_download_new_image_for_current_ancestor
