@@ -44,12 +44,12 @@ module M
   class ShowImage < JFrame
     include java.awt.event.ActionListener
     
-    def initialize
+    def initialize proc_to_give_me_next_ancestor
       super
+	  @proc_to_give_me_next_ancestor = proc_to_give_me_next_ancestor
       set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
       @timer = nil
       @start = Time.now
-      setup_ancestors
       pick_new_ancestor
       
       begin
@@ -91,16 +91,12 @@ module M
       self.visible=true
     end
     
-    def setup_ancestors
-      p 'starting download of your ancestors\' information from new familysearch...'
-      FamilySearchApi.warmup
-    end
     
     def pick_new_ancestor
       # rotate...
       birth_place = nil
       until birth_place
-        @ancestor = FamilySearchApi.give_me_random_ancestor
+        @ancestor = @proc_to_give_me_next_ancestor.call
         p 'doing a different ancestor' + @ancestor.inspect
         birth_place = @ancestor[:birth_place]
       end
@@ -136,20 +132,27 @@ module M
       
       # 0 is you, 1 is father
       generations_from_you = hash_stats[:relation_level]
-      output = "Your "
-      if generations_from_you >= 3
-        output += (["Great "] * (generations_from_you - 2)).join('')
-      end
-      if generations_from_you >= 2
-        output += " Grand"
-      end
-      
-      if hash_stats[:gender] == 'Male'
-        output += "father"
-      else
-        output += "mother"
-      end
-      output = 'Yourself' if generations_from_you == 0
+	  if generations_from_you
+          if generations_from_you == 0
+		    output = 'Yourself' 
+		  else
+			  output = "Your "
+			  if generations_from_you >= 3
+				output += (["Great "] * (generations_from_you - 2)).join('')
+			  end
+			  if generations_from_you >= 2
+				output += " Grand"
+			  end
+			  
+			  if hash_stats[:gender] == 'Male'
+				output += "father"
+			  else
+				output += "mother"
+			  end
+		  end
+	  else
+	     output += 'Ancestor or Relative' # TODO more here? -- could be "just relative" since the gedcom parser didn't find it...
+	  end
       new_stats << output
     end
     

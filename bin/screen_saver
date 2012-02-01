@@ -2,5 +2,11 @@ puts 'Loading Family Tree Screen Saver...'
 $: << '.'
 require File.dirname(__FILE__) + '/../lib/screen_saver.rb'
 
-M::ShowImage.new
+    def setup_fs_api_ancestors
+      p 'starting download of your ancestors\' information from new familysearch...'
+      FamilySearchApi.warmup
+    end
+
+setup_fs_api_ancestors
+M::ShowImage.new {  FamilySearchApi.give_me_random_ancestor }
 sleep # see http://jira.codehaus.org/browse/JRUBY-4823
