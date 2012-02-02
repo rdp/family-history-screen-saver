@@ -15,7 +15,7 @@ class FlickrPhoto
       
      latitude = new_b[0]['latitude'].to_f
      longitude = new_b[0]['longitude'].to_f
-     # place_id = new_b[0]['place_id']    
+     place_id = new_b[0]['place_id']  # unused
      p 'flickr place id:' + place_name + ' ' + place_id
   
      args = {

@@ -4,7 +4,7 @@ require 'flickr_photo' # my file
 require 'family_search_api' 
 require_relative 'jruby-swing-helpers/swing_helpers'
 
-Use_fake_ancestry = true # for demo'ing, or testing :)
+Use_fake_ancestry = false # for demo'ing, or testing :)
 
 if Use_fake_ancestry
 
