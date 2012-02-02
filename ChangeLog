@@ -1,3 +1,7 @@
+0.6.0 2-2-12 ==
+
+can use gedcom's, some minor cleanups
+
 0.5.0 ==
 
 download ancestors in the background, to get images to your screen more quickly.

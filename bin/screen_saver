@@ -21,7 +21,7 @@ if ARGV[0] == '--fs-api'
   storage = Storage.new('screen_saver')
   filename = storage['always_use_path']
   if !filename
-    filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use'
+    filename = SwingHelpers.new_previously_existing_file_selector_and_go 'pick gedcom file to use, with you as the first entry in it.'
     if SwingHelpers.show_select_buttons_prompt('Would you like to make this file the default to use from now on?') == :yes
 	   storage['always_use_path'] = filename
     end

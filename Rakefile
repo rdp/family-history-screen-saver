@@ -26,7 +26,7 @@ task 'create_distro_dir' => 'gemspec' do
   }
   raise 'unable to delete' if Dir[spec.name + '-*'].length > 0
   
-  raise unless File.exist? 'vendor/jruby-complete.jar' 
+  raise unless File.exist? 'vendor/jruby-complete-1.6.6.jar' 
   
   existing = Dir['*']
   FileUtils.mkdir_p dir_out
