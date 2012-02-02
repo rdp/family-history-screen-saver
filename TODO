@@ -1,24 +1,26 @@
 == next ==
 
-  apply for real production API key
-
-  make it distributable installerable?
-
-  always display their relationship
+  always display the relationship
   
   it switches people/stats before it switches pictures
   
+  move text to the bottom, those pictures look pretty!
+
+== blocked ==
+  apply for real production API key
+  
 == random ==
+
+make it distributable installerable?
 
 can click somewhere to "show this full picture"
 
 can download from my preservation archiver images LOL
 
-move login code to screen_saver
-
 update the title with what the picture/person is, too
 cache users' pedigree tree... :P
     so they don't have to login every time...
+	or their login...
 
 don't download their whole tree, only the first x...or save it locally [?]
  or give it to them while you download too? yeah...

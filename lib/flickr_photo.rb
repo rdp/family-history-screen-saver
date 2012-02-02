@@ -15,7 +15,7 @@ class FlickrPhoto
       
      latitude = new_b[0]['latitude'].to_f
      longitude = new_b[0]['longitude'].to_f
-     place_id = new_b[0]['place_id']    
+     # place_id = new_b[0]['place_id']    
      p 'flickr place id:' + place_name + ' ' + place_id
   
      args = {
@@ -24,7 +24,7 @@ class FlickrPhoto
          :safe_search => 1, # try to avoid "bad" pictures
          :accuracy => 1 # needed, too, or returns like 0 things
       }
-     add_radius(2, args, latitude, longitude) 
+     add_bbox_radius(2, args, latitude, longitude) 
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
@@ -36,7 +36,7 @@ class FlickrPhoto
          want_others = true
        end
     else
-       want_others = true
+       want_others = true # landscape 1/2 the time
     end
 
     if want_others
@@ -61,7 +61,7 @@ class FlickrPhoto
      as_hash
   end
 
-  def self.add_radius radius, to_this_hash, latitude, longitude
+  def self.add_bbox_radius radius, to_this_hash, latitude, longitude
     to_this_hash[:bbox] = "#{longitude - radius},#{latitude - radius},#{longitude + radius},#{latitude + radius}"
   end
   

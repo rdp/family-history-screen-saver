@@ -51,7 +51,12 @@ module M
       pick_new_ancestor      
 	  dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
 	  # get an image before starting...which is slightly prettier
-      pick_and_download_new_image_for_current_ancestor
+      begin
+	    pick_and_download_new_image_for_current_ancestor
+	  rescue Exception => e
+	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!"
+		java::lang::System.exit 1
+	  end
 	  dialog.close
 	  
       switch_image_same_ancestor_timer = javax.swing.Timer.new(10*1000, nil) # switch images every 10s
