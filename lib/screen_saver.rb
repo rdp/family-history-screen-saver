@@ -4,23 +4,33 @@ require 'flickr_photo' # my file
 require 'family_search_api' 
 require_relative 'jruby-swing-helpers/swing_helpers'
 
-use_fake_ancestry = false # for demo'ing, or testing :)
+use_fake_ancestry = true # for demo'ing, or testing :)
 
 if use_fake_ancestry
 
-  def FamilySearchApi.give_me_random_ancestor
+  #def FamilySearchApi.give_me_random_ancestor
   #     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]    
   #     [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]    
      [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
         :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
+  #end
+  def FlickrPhoto.get_random_photo_hash_with_url_and_title place, year
+    out = {}
+	out[:url]="./test_image.jpg"
+	out[:title]="an awesome title"
+	out
   end
-
 end
 
 def download full_url, to_here
-  require 'open-uri'
-  writeOut = open(to_here, "wb")
-  writeOut.write(open(full_url).read)
+  if File.exist? full_url
+    got = File.binread(full_url)
+  else
+    require 'open-uri'
+	got = open(full_url).read
+  end
+    writeOut = open(to_here, "wb")
+  writeOut.write(got)
   writeOut.close
 end
 
@@ -54,8 +64,9 @@ module M
       begin
 	    pick_and_download_new_image_for_current_ancestor
 	  rescue Exception => e
-	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!"
-		java::lang::System.exit 1
+	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
+		raise e
+		#java::lang::System.exit 1
 	  end
 	  dialog.close
 	  
