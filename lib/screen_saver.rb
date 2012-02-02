@@ -120,8 +120,7 @@ module M
       stats = translate_ancestor_info_to_info_strings ancestor
       name = stats.shift
 	  pick_and_download_new_image_for_current_ancestor ancestor
-      # too annoying, but does preserve continuity... 
-	  @ancestor = ancestor
+ 	  @ancestor = ancestor
 	  @stats = stats
 	  @name = name
  	end
@@ -140,7 +139,7 @@ module M
         image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
       end
       download(url, 'temp.jpg')
-	  @image_title_prefix=image_title_prefix # post download
+	  @image_title_prefix=image_title_prefix # set them post download LODO ugly
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = new_title
     end
