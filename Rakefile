@@ -15,10 +15,21 @@ Jeweler::Tasks.new do |s|
     s.add_dependency 'sane', '>= 0.25.0'
 end
 
-desc 'create distro zippable file'
-task 'create_distro_dir' => 'gemspec' do 
+desc 'release file'
+task 'release_wbo' do
+  raise unless File.exist? cur_name + '.zip'
+  system(c ="scp #{cur_name}.zip wilkboar@inet2.org:~/www/screensaverinet2/releases")
+  puts c
+end
+
+def cur_name
   spec = eval File.read('family_history_screen_saver.gemspec')
   prefix = spec.name + "-" + spec.version.version
+end
+
+desc 'create distro zippable file'
+task 'create_distro_dir' => 'gemspec' do
+  prefix = cur_name
   dir_out = prefix + '/' + spec.name
   Dir[spec.name + '-*'].each{|old|
     p 'removing ' + old
