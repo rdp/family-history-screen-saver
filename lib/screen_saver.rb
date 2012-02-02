@@ -57,14 +57,13 @@ module M
       self.defaultCloseOperation = M::JFrame::DISPOSE_ON_CLOSE 
 	  manager.addKeyEventDispatcher { close }
 	  @proc_to_give_me_next_ancestor = block_for_single_ancestor
-      set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
+      set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors!")
       @timer = nil
       @start = Time.now
       begin
-        pick_new_ancestor      
+        pick_new_ancestor_and_image      
 	    dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
 	    # get an image before starting...which is slightly prettier
- 	    pick_and_download_new_image_for_current_ancestor @ancestor
 	  rescue Exception => e
 	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
 		raise e
@@ -76,7 +75,7 @@ module M
       switch_image_same_ancestor_timer.start
       switch_image_same_ancestor_timer.add_action_listener do |e|
         @download_thread.join if @download_thread # don't download 2 images at once, for slower connections...
-		@download_thread = Thread.new { 
+		@download_thread = Thread.new {
           begin
             pick_and_download_new_image_for_current_ancestor @ancestor
           rescue Exception => e
@@ -95,8 +94,8 @@ module M
         Thread.new {
           switch_image_same_ancestor_timer.stop()
 		  switch_image_same_ancestor_timer.stop()
-          pick_new_ancestor
-          pick_and_download_new_image_for_current_ancestor @ancestor
+		  @download_thread.join if @download_thread
+          pick_new_ancestor_and_image
           switch_image_same_ancestor_timer.restart()
 		  switch_image_same_ancestor_timer.restart()
         }
@@ -111,7 +110,7 @@ module M
       self.visible=true
     end
     
-	def pick_new_ancestor
+	def pick_new_ancestor_and_image
       birth_place = nil
       until birth_place
         ancestor = @proc_to_give_me_next_ancestor.call
@@ -168,9 +167,17 @@ module M
 			  end
 			  
 			  if hash_stats[:gender] == 'Male'
-				output += "father"
+			    if hash_stats[:non_direct]
+				  output += "uncle"
+				else
+				  output += "father"
+				end
 			  else
-				output += "mother"
+			    if hash_stats[:non_direct]
+				  output += "aunt"
+				else
+				  output += "mother"
+				end
 			  end
 		  end
 	  else

@@ -55,6 +55,7 @@ class GedcomParser
 		if !person[:relation_level] 
 		  if level = family_level_hash[person[:famc]]
 		    # a child, we have its family
+			person[:non_direct] = true
 	        compute_person_relation_level person, level-1, relat_hash, family_level_hash
 		  else
 		    #puts 'no relation level please report' # happens too frequently to report...
