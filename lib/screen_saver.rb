@@ -4,20 +4,22 @@ require 'flickr_photo' # my file
 require 'family_search_api' 
 require_relative 'jruby-swing-helpers/swing_helpers'
 
-use_fake_ancestry = true # for demo'ing, or testing :)
+Use_fake_ancestry = true # for demo'ing, or testing :)
 
-if use_fake_ancestry
+if Use_fake_ancestry
 
   #def FamilySearchApi.give_me_random_ancestor
   #     [{:name => "Fred", :relation_level => 1, :gender => 'Male', :birth_place => 'zions national park', :birth_year => 1980}]    
   #     [{:name=>"Harriet Emily malin", :relation_level=>2, :gender=>"Female", :birth_place=>"Rockport Twp, Summit, Utah, United States", :birth_year=>1873}, {:name=>"Caroline Andersen", :relation_level=>2, :gender=>"Female", :birth_place=>"Ephraim, Sanpete, Utah, United States", :birth_year=>1878}, {:name=>"Wesley Malin Pack", :relation_level=>1, :gender=>"Male", :birth_place=>"Kamas, Summit, Utah, United States", :birth_year=>1919}, {:name=>"Guarani", :relation_level=>3, :gender=>"Male", :birth_place=>"Brazil", :birth_year=>1750}, {:name=>"coolio", :relation_level=>2, :gender=>"Male", :birth_place=>"Peru", :birth_year=>1920}, {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845}, {:name=>"Helen Heppler", :relation_level=>1, :gender=>"Female", :birth_place=>"Richfield, Sevier, Utah, United States", :birth_year=>1909}, {:name=>"Fredette", :relation_level=>3, :gender=>"Female", :birth_place=>nil, :birth_year=>1845}]    
-     [{:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
-        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}]
+     fred = {:name=>"Fred", :relation_level=>2, :gender=>"Male", :birth_place=>"New York City, New York, United States", :birth_year=>1845, 
+        :image_note_urls => ["http://dl.dropbox.com/u/40012820/kids.jpg"], :afn => "ABCD-1234"}
+	[fred]
   #end
   def FlickrPhoto.get_random_photo_hash_with_url_and_title place, year
     out = {}
 	out[:url]="./test_image.jpg"
 	out[:title]="an awesome title"
+	sleep 5
 	out
   end
 end
@@ -62,7 +64,7 @@ module M
 	  dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
 	  # get an image before starting...which is slightly prettier
       begin
-	    pick_and_download_new_image_for_current_ancestor
+	    pick_and_download_new_image_for_current_ancestor @ancestor
 	  rescue Exception => e
 	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
 		raise e
@@ -76,7 +78,7 @@ module M
         @download_thread.join if @download_thread # don't download 2 images at once, for slower connections...
 		@download_thread = Thread.new { 
           begin
-            pick_and_download_new_image_for_current_ancestor 
+            pick_and_download_new_image_for_current_ancestor @ancestor
           rescue Exception => e
             SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s + e.backtrace.inspect
             raise
@@ -85,12 +87,15 @@ module M
       end
       
       switch_ancestor_timer = javax.swing.Timer.new(17*1000, nil)
+	  if Use_fake_ancestry
+        switch_ancestor_timer = javax.swing.Timer.new(3*1000, nil)
+	  end
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
         Thread.new {
           pick_new_ancestor
-          switch_image_same_ancestor_timer.restart()
-          pick_and_download_new_image_for_current_ancestor
+          switch_image_same_ancestor_timer.stop()
+          pick_and_download_new_image_for_current_ancestor @ancestor
           switch_image_same_ancestor_timer.restart()
         }
       end
@@ -118,18 +123,18 @@ module M
 	  @img = nil
     end
     
-    def pick_and_download_new_image_for_current_ancestor
-      if(@ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
-        url = @ancestor[:image_note_urls].sample
+    def pick_and_download_new_image_for_current_ancestor ancestor
+      if(ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
+        url = ancestor[:image_note_urls].sample
         p 'doing image from notes', url
         new_title = url.split('/')[-1].split('.')[0..-2].join('.')
         @image_title_prefix = ''
       else
-        hash = FlickrPhoto.get_random_photo_hash_with_url_and_title @ancestor[:birth_place], @ancestor[:birth_year]
+        hash = FlickrPhoto.get_random_photo_hash_with_url_and_title ancestor[:birth_place], ancestor[:birth_year]
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        @image_title_prefix = "Photo from near #{@ancestor[:name].split.first}'s birthplace:"
+        @image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
       end
       download(url, 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
