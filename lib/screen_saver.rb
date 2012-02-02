@@ -60,11 +60,11 @@ module M
       set_title("You and Your Ancestors--Living Tree--Get to Know Your Ancestors lives!")
       @timer = nil
       @start = Time.now
-      pick_new_ancestor      
-	  dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
-	  # get an image before starting...which is slightly prettier
       begin
-	    pick_and_download_new_image_for_current_ancestor @ancestor
+        pick_new_ancestor      
+	    dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
+	    # get an image before starting...which is slightly prettier
+ 	    pick_and_download_new_image_for_current_ancestor @ancestor
 	  rescue Exception => e
 	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
 		raise e
@@ -93,10 +93,12 @@ module M
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
         Thread.new {
-          pick_new_ancestor
           switch_image_same_ancestor_timer.stop()
+		  switch_image_same_ancestor_timer.stop()
+          pick_new_ancestor
           pick_and_download_new_image_for_current_ancestor @ancestor
           switch_image_same_ancestor_timer.restart()
+		  switch_image_same_ancestor_timer.restart()
         }
       end
 
@@ -118,8 +120,8 @@ module M
       end
       stats = translate_ancestor_info_to_info_strings ancestor
       name = stats.shift
+	  pick_and_download_new_image_for_current_ancestor ancestor
       # too annoying, but does preserve continuity... 
-	  @img = nil
 	  @ancestor = ancestor
 	  @stats = stats
 	  @name = name
@@ -130,15 +132,16 @@ module M
         url = ancestor[:image_note_urls].sample
         p 'doing image from notes', url
         new_title = url.split('/')[-1].split('.')[0..-2].join('.')
-        @image_title_prefix = ''
+        image_title_prefix = ''
       else
         hash = FlickrPhoto.get_random_photo_hash_with_url_and_title ancestor[:birth_place], ancestor[:birth_year]
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        @image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
+        image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
       end
       download(url, 'temp.jpg')
+	  @image_title_prefix=image_title_prefix # post download
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
       @image_title = new_title
     end
