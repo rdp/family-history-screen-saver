@@ -109,20 +109,22 @@ module M
       self.visible=true
     end
     
-    
-    def pick_new_ancestor
+	def pick_new_ancestor
       birth_place = nil
       until birth_place
-        @ancestor = @proc_to_give_me_next_ancestor.call
-        p 'doing a next/different ancestor' + @ancestor.inspect
-        birth_place = @ancestor[:birth_place]
+        ancestor = @proc_to_give_me_next_ancestor.call
+        p 'doing a next/different ancestor' + ancestor.inspect
+        birth_place = ancestor[:birth_place]
       end
-      @stats = translate_ancestor_info_to_info_strings @ancestor
-      @name = @stats.shift
+      stats = translate_ancestor_info_to_info_strings ancestor
+      name = stats.shift
       # too annoying, but does preserve continuity... 
 	  @img = nil
-    end
-    
+	  @ancestor = ancestor
+	  @stats = stats
+	  @name = name
+ 	end
+	
     def pick_and_download_new_image_for_current_ancestor ancestor
       if(ancestor[:image_note_urls].length > 0 && (rand(2) == 0))
         url = ancestor[:image_note_urls].sample
