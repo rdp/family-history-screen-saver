@@ -31,7 +31,7 @@ def download full_url, to_here
     require 'open-uri'
 	got = open(full_url).read
   end
-    writeOut = open(to_here, "wb")
+  writeOut = open(to_here, "wb")
   writeOut.write(got)
   writeOut.close
 end
@@ -62,13 +62,13 @@ module M
       @start = Time.now
       begin
 	    dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
-		Thread.new { sleep 4; dialog.close }
 	    # get an image before starting...which is slightly prettier
         pick_new_ancestor_and_image
 		dialog.close
+		sleep 0.5 # let it close that thing is uhg-ly
 	  rescue Exception => e
 	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
-		raise e # kills t
+		raise e # kills us
 	  end
 	  
       switch_image_same_ancestor_timer = javax.swing.Timer.new(7*1000, nil) # switch images every 10s LODO preference
@@ -80,7 +80,7 @@ module M
             pick_and_download_new_image_for_current_ancestor @ancestor
           rescue Exception => e
 		    p e.backtrace
-            SwingHelpers.show_non_blocking_message_dialog "get new image failed?:" + e.to_s
+            SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s
             raise
           end
         } # do it in the background instead of in the one swing thread <sigh>
@@ -92,10 +92,10 @@ module M
 	  end
       switch_ancestor_timer.start
       switch_ancestor_timer.add_action_listener do |e|
-        Thread.new {
+        Thread.new { # don't need to join since we disable the timer...
           switch_image_same_ancestor_timer.stop()
 		  switch_image_same_ancestor_timer.stop()
-		  @download_thread.join if @download_thread
+		  @download_thread.join if @download_thread # smelly
           pick_new_ancestor_and_image
           switch_image_same_ancestor_timer.restart()
 		  switch_image_same_ancestor_timer.restart()
@@ -138,11 +138,16 @@ module M
         url = hash[:url]
         new_title = hash[:title]
         image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace"
-		if new_title =~ /landscape/i
+		if new_title =~ /landscape/i # LODO more accuracy
 		  image_title_prefix += " (present day image)"
 		end
       end
-      download(url, 'temp.jpg')
+      begin
+	    download(url, 'temp.jpg')
+	  rescue Exception => e	   
+	    p 'unable to download next image?' + e.to_s
+		return # early
+	  end
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
 	  @image_title_prefix=image_title_prefix # set them post download LODO ugly
       @image_title = new_title
@@ -184,7 +189,7 @@ module M
 			  end
 		  end
 	  else
-	     output += 'Ancestor or Relative' # TODO more here? -- could be "just relative" since the gedcom parser didn't find it...
+	    output += 'Ancestor or Relative' # TODO more here? -- could be "just relative" since the gedcom parser didn't find it...
 	  end
       new_stats << output
     end
@@ -227,12 +232,11 @@ module M
     end
     
     def paint(g)
-      # TODO when there's a change in image, clear the whole screen [?] and draw it once in the bottom right [?] maybe transparent? maybe avoid overwriting?
-      # g.draw_image(@img, self.width - @img.width, self.height - @img.height, self) if @img
-      # it wants to float "smoothly" across the pseudo screen
+      # it wants to float "smoothly" across the (pseudo) screen
       ratio = width().to_f/height()
       new_x = (Time.now.to_f*35) % (width-700) # not let it go too far right
-      new_y = (height() - (Time.now.to_f*35)) % (height-350) # don't go too far down
+	  scrolling_speed = 25 # bigger is faster movement
+      new_y = (height() - (Time.now.to_f*scrolling_speed)) % (height()-350) # don't go too far down
       g.translate(new_x, new_y)
       g.rotate(0.1, 0, 0)
       g.drawImage(get_floater_image,0,0,self)
