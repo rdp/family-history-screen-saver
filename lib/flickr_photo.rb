@@ -55,7 +55,7 @@ class FlickrPhoto
      end
     
      outgoing = all.sample # randomize :P
-     p outgoing
+     #p outgoing
      as_hash = {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
      p as_hash
      as_hash
@@ -67,11 +67,12 @@ class FlickrPhoto
   
   def self.do_flicker_search args
     p 'searching', args
-    if @@cache[args]
-      return @@cache[args]
-    else
+    if !@@cache[args]
       @@cache[args] = flickr.photos.search args # this takes like 2s, so we cache it...
+	  @@cache[args] = @@cache[args].to_a
+	  @@cache[args].reject!{|p| p['title'] == "once upon a time in the west"}
     end
+	@@cache[args]
   end
 
   def self.convert_year_to_timestamp year
