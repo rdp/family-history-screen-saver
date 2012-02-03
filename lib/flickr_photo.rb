@@ -21,7 +21,7 @@ class FlickrPhoto
      args = {
   #      :lat => latitude, :lon => longitude,# :radius => 31, # using bbox for now
   #      :place_id => place_id
-         :safe_search => 1, # try to avoid "bad" pictures
+         :safe_search => 1, # try to avoid "bad" pictures-- g -rated
          :accuracy => 1 # needed, too, or returns like 0 things
       }
      add_bbox_radius(2, args, latitude, longitude) 

@@ -80,7 +80,7 @@ module M
             pick_and_download_new_image_for_current_ancestor @ancestor
           rescue Exception => e
 		    p e.backtrace
-            SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s
+            SwingHelpers.show_non_blocking_message_dialog "get new image failed?:" + e.to_s
             raise
           end
         } # do it in the background instead of in the one swing thread <sigh>
@@ -137,7 +137,10 @@ module M
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
+        image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace"
+		if new_title =~ /landscape/i
+		  image_title_prefix += " (present day image)"
+		end
       end
       download(url, 'temp.jpg')
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
