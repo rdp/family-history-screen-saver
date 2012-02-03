@@ -29,6 +29,7 @@ end
 
 desc 'create distro zippable file'
 task 'create_distro_dir' => 'gemspec' do
+  spec = eval File.read('family_history_screen_saver.gemspec')
   prefix = cur_name
   dir_out = prefix + '/' + spec.name
   Dir[spec.name + '-*'].each{|old|
