@@ -188,8 +188,9 @@ module M
     
     # returns a java Image object from currently cached image...this currently might not be too cpu friendly though... :P
     def get_floater_image
-      # LODO cache this...if expensive :P
-      floater_height = 450
+      # LODO cache this method...if expensive :P
+	  image_height = 350
+      floater_height = image_height + 200
 	  floater_width = 1000
       
       image = BufferedImage.new(floater_width, floater_height, BufferedImage::TYPE_INT_RGB);
@@ -197,12 +198,12 @@ module M
       g = image.createGraphics()
       # by default it's all black...I think.
       g.setColor( Color::WHITE )
-      g.fillRect(0,0,floater_width,floater_height+250)
+      g.fillRect(0,0,floater_width,floater_height)
       unless @img
         p 'image not downloaded yet, perhaps? -- not drawing it...'
         return image
       end
-      image_height = [@img.height, floater_height - 95].min # LODO am I getting full res images?
+      image_height = [@img.height, image_height].min # LODO am I getting full res images?
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       g.drawString(@image_title_prefix, 30, 60)
@@ -230,7 +231,7 @@ module M
       new_x = (Time.now.to_f*35) % (width-700) # not let it go too far right
       new_y = (height() - (Time.now.to_f*35)) % (height-350) # don't go too far down
       g.translate(new_x, new_y)
-      g.rotate(0.2, 0, 0)
+      g.rotate(0.1, 0, 0)
       g.drawImage(get_floater_image,0,0,self)
       unless @timer
         duration = 0.03*1000
