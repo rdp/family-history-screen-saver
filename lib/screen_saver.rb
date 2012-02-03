@@ -78,7 +78,8 @@ module M
           begin
             pick_and_download_new_image_for_current_ancestor @ancestor
           rescue Exception => e
-            SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s + e.backtrace.inspect
+		    p e.backtrace
+            SwingHelpers.show_blocking_message_dialog "get new image failed?:" + e.to_s
             raise
           end
         } # do it in the background instead of in the one swing thread <sigh>
@@ -195,7 +196,7 @@ module M
       g = image.createGraphics()
       # by default it's all black...I think.
       g.setColor( Color::WHITE )
-      g.fillRect(0,0,floater_width,floater_height+200)
+      g.fillRect(0,0,floater_width,floater_height+250)
       unless @img
         p 'image not downloaded yet, perhaps? -- not drawing it...'
         return image
@@ -203,7 +204,8 @@ module M
       image_height = [@img.height, floater_height - 95].min # LODO am I getting full res images?
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
-      g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 60)
+      g.drawString(@image_title_prefix, 30, 60)
+      g.drawString('Title:' + @image_title, 30, image_height+120)
 	  
       g.drawImage(@img, 10, 90, @img.width, image_height, nil) # x, y, width, height, observer LODO does this stretch things weirdly?
       # now the text around the image
