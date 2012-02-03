@@ -70,7 +70,7 @@ class FlickrPhoto
     if !@@cache[args]
       @@cache[args] = flickr.photos.search args # this takes like 2s, so we cache it...
 	  @@cache[args] = @@cache[args].to_a
-	  @@cache[args].reject!{|p| p['title'] == "once upon a time in the west"}
+	  @@cache[args].reject!{|p| p['title'] =~ /once upon a time/i}
     end
 	@@cache[args]
   end
