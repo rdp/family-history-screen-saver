@@ -32,6 +32,7 @@ task 'create_distro_dir' => 'gemspec' do
   spec = eval File.read('family_history_screen_saver.gemspec')
   prefix = cur_name
   dir_out = prefix + '/' + spec.name
+  File.delete 'default.ged' if File.exist? 'default.ged'
   Dir[spec.name + '-*'].each{|old|
     p 'removing ' + old
     FileUtils.rm_rf old
