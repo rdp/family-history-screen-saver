@@ -138,8 +138,8 @@ module M
         image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace:"
       end
       download(url, 'temp.jpg')
-	  @image_title_prefix=image_title_prefix # set them post download LODO ugly
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
+	  @image_title_prefix=image_title_prefix # set them post download LODO ugly
       @image_title = new_title
     end
     
@@ -200,10 +200,10 @@ module M
         p 'image not downloaded yet, perhaps? -- not drawing it...'
         return image
       end
+      image_height = [@img.height, floater_height - 95].min # LODO am I getting full res images?
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       g.drawString(@image_title_prefix + ' Title:' + @image_title, 30, 60)
-      image_height = [@img.height, floater_height - 95].min # LODO am I getting full res images?
 	  
       g.drawImage(@img, 10, 90, @img.width, image_height, nil) # x, y, width, height, observer LODO does this stretch things weirdly?
       # now the text around the image
