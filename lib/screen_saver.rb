@@ -62,9 +62,10 @@ module M
       @start = Time.now
       begin
 	    dialog = SwingHelpers.show_non_blocking_message_dialog "Downloading first image related to your ancestors...\nPlease wait..."
+		Thread.new { sleep 4; dialog.close }
+	    # get an image before starting...which is slightly prettier
         pick_new_ancestor_and_image
 		dialog.close
-	    # get an image before starting...which is slightly prettier
 	  rescue Exception => e
 	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
 		raise e # kills t
@@ -205,7 +206,7 @@ module M
       g.setColor( Color::BLACK )
       g.setFont(Font.new("Lucida Bright", Font::ITALIC, 30))
       g.drawString(@image_title_prefix, 30, 60)
-      g.drawString('Title:' + @image_title, 30, image_height+120)
+      g.drawString(@image_title, 30, image_height+120)
 	  
       g.drawImage(@img, 10, 90, @img.width, image_height, nil) # x, y, width, height, observer LODO does this stretch things weirdly?
       # now the text around the image
