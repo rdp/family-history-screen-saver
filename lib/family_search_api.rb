@@ -109,7 +109,7 @@ module FamilySearchApi
     
     begin
       authenticate_me($com, user, pass)
-    rescue RubyFsStack::Unauthorized, Errno::EAGAIN => e
+    rescue Exception => e
       SwingHelpers.show_blocking_message_dialog "login failed!" + e.to_s
       raise
     end
