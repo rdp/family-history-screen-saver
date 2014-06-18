@@ -10,5 +10,6 @@ $ git clone https://github.com/rdp/family-history-screen-saver.git
 $ cd family-history-screen-saver
 $ git submodule update --init
 
-$ jruby -S gem install flickraw ruby-fs-stack sane andand
-$ go.bat # or go.sh, depending on your OS
+
+$ jruby bin/screen_saver --help # to see available options
+$ jruby bin/screen_saver ... # to run
