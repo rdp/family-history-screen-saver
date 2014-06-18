@@ -6,5 +6,9 @@ so it will use flickr's api to search for photos of new brunswick around that ti
 
 To run, download/install jruby
 
+$ git clone https://github.com/rdp/family-history-screen-saver.git
+$ cd family-history-screen-saver
+$ git submodule update --init
+
 $ jruby -S gem install flickraw ruby-fs-stack sane andand
-$ jruby screen_saver.rb
+$ go.bat # or go.sh, depending on your OS
