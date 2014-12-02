@@ -67,7 +67,7 @@ module M
 		dialog.close
 		sleep 0.5 # let it close that thing is uhg-ly
 	  rescue Exception => e
-	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e
+	    SwingHelpers.show_blocking_message_dialog "appears your internet connection is down, or some other problems...try again later!" + e.to_s
 		raise e # kills us
 	  end
 	  
@@ -238,7 +238,7 @@ module M
 	  scrolling_speed = 25 # bigger is faster movement
       new_y = (height() - (Time.now.to_f*scrolling_speed)) % (height()-350) # don't go too far down
       g.translate(new_x, new_y)
-      g.rotate(0.1, 0, 0)
+      g.rotate(0.1, 0.0, 0.0)
       g.drawImage(get_floater_image,0,0,self)
       unless @timer
         duration = 0.03*1000

@@ -8,7 +8,7 @@ require 'helper'
 
 class Basic < Test::Unit::TestCase
   def test_request
-    flickr_objects = %w{activity auth blogs collections commons contacts
+    flickr_objects = %w{activity auth blogs cameras collections commons contacts
        favorites galleries groups interestingness machinetags panda
        people photos photosets places prefs push reflection stats tags
        test urls
@@ -28,16 +28,20 @@ class Basic < Test::Unit::TestCase
       flickr.auth.getFrob
       flickr.auth.getFullToken
       flickr.auth.getToken
+      flickr.auth.oauth.checkToken
       flickr.auth.oauth.getAccessToken
       flickr.blogs.getList
       flickr.blogs.getServices
       flickr.blogs.postPhoto
+      flickr.cameras.getBrandModels
+      flickr.cameras.getBrands
       flickr.collections.getInfo
       flickr.collections.getTree
       flickr.commons.getInstitutions
       flickr.contacts.getList
       flickr.contacts.getListRecentlyUploaded
       flickr.contacts.getPublicList
+      flickr.contacts.getTaggingSuggestions
       flickr.favorites.add
       flickr.favorites.getContext
       flickr.favorites.getList
@@ -53,7 +57,18 @@ class Basic < Test::Unit::TestCase
       flickr.galleries.getListForPhoto
       flickr.galleries.getPhotos
       flickr.groups.browse
+      flickr.groups.discuss.replies.add
+      flickr.groups.discuss.replies.delete
+      flickr.groups.discuss.replies.edit
+      flickr.groups.discuss.replies.getInfo
+      flickr.groups.discuss.replies.getList
+      flickr.groups.discuss.topics.add
+      flickr.groups.discuss.topics.getInfo
+      flickr.groups.discuss.topics.getList
       flickr.groups.getInfo
+      flickr.groups.join
+      flickr.groups.joinRequest
+      flickr.groups.leave
       flickr.groups.members.getList
       flickr.groups.pools.add
       flickr.groups.pools.getContext
@@ -71,7 +86,9 @@ class Basic < Test::Unit::TestCase
       flickr.panda.getPhotos
       flickr.people.findByEmail
       flickr.people.findByUsername
+      flickr.people.getGroups
       flickr.people.getInfo
+      flickr.people.getLimits
       flickr.people.getPhotos
       flickr.people.getPhotosOf
       flickr.people.getPublicGroups
@@ -127,6 +144,11 @@ class Basic < Test::Unit::TestCase
       flickr.photos.setPerms
       flickr.photos.setSafetyLevel
       flickr.photos.setTags
+      flickr.photos.suggestions.approveSuggestion
+      flickr.photos.suggestions.getList
+      flickr.photos.suggestions.rejectSuggestion
+      flickr.photos.suggestions.removeSuggestion
+      flickr.photos.suggestions.suggestLocation
       flickr.photos.transform.rotate
       flickr.photos.upload.checkTickets
       flickr.photosets.addPhoto
@@ -173,16 +195,16 @@ class Basic < Test::Unit::TestCase
       flickr.push.unsubscribe
       flickr.reflection.getMethodInfo
       flickr.reflection.getMethods
+      flickr.stats.getCSVFiles
       flickr.stats.getCollectionDomains
       flickr.stats.getCollectionReferrers
       flickr.stats.getCollectionStats
-      flickr.stats.getCSVFiles
       flickr.stats.getPhotoDomains
       flickr.stats.getPhotoReferrers
+      flickr.stats.getPhotoStats
       flickr.stats.getPhotosetDomains
       flickr.stats.getPhotosetReferrers
       flickr.stats.getPhotosetStats
-      flickr.stats.getPhotoStats
       flickr.stats.getPhotostreamDomains
       flickr.stats.getPhotostreamReferrers
       flickr.stats.getPhotostreamStats
@@ -195,6 +217,7 @@ class Basic < Test::Unit::TestCase
       flickr.tags.getListUser
       flickr.tags.getListUserPopular
       flickr.tags.getListUserRaw
+      flickr.tags.getMostFrequentlyUsed
       flickr.tags.getRelated
       flickr.test.echo
       flickr.test.login
@@ -252,18 +275,6 @@ class Basic < Test::Unit::TestCase
     assert list.any? {|g| g.nsid == "51035612836@N01"}
   end
   
-  # panda
-  def test_panda_getList
-    pandas = flickr.panda.getList
-    assert_equal ["ling ling", "hsing hsing", "wang wang"], pandas.to_a
-  end
-  
-  def test_panda_getPhotos
-    pandas = flickr.panda.getPhotos :panda_name => "wang wang"
-    assert_equal "wang wang", pandas.panda
-    assert_respond_to pandas[0], :title
-  end
-  
   # people
   def test_people_findByEmail
     user = flickr.people.findByEmail :find_email => "flickraw@yahoo.com"
@@ -279,9 +290,9 @@ class Basic < Test::Unit::TestCase
     user = flickr.people.getInfo :user_id => "41650587@N02"
     people user
     assert_equal "Flickraw", user.realname
-    assert_equal "http://www.flickr.com/photos/41650587@N02/", user.photosurl
-    assert_equal "http://www.flickr.com/people/41650587@N02/", user.profileurl
-    assert_equal "http://m.flickr.com/photostream.gne?id=41630239", user.mobileurl
+    assert_equal "https://www.flickr.com/photos/41650587@N02/", user.photosurl
+    assert_equal "https://www.flickr.com/people/41650587@N02/", user.profileurl
+    assert_equal "https://m.flickr.com/photostream.gne?id=41630239", user.mobileurl
     assert_equal 0, user.ispro
   end
   
@@ -331,7 +342,7 @@ class Basic < Test::Unit::TestCase
   
   def test_photos_getSizes
     info = flickr.photos.getSizes :photo_id => "3839885270"
-    assert_equal "http://www.flickr.com/photos/41650587@N02/3839885270/sizes/l/", info.find {|f| f.label == "Large"}.url
+    assert_equal "https://www.flickr.com/photos/41650587@N02/3839885270/sizes/l/", info.find {|f| f.label == "Large"}.url
     if FlickRaw.secure
       source = "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_b.jpg"
     else
@@ -354,7 +365,7 @@ class Basic < Test::Unit::TestCase
     assert_equal "41630239-3839885270-72157621986549875", comments[0].id
     assert_equal "41650587@N02", comments[0].author
     assert_equal "ruby_flickraw", comments[0].authorname
-    assert_equal "http://www.flickr.com/photos/41650587@N02/3839885270/#comment72157621986549875", comments[0].permalink
+    assert_equal "https://www.flickr.com/photos/41650587@N02/3839885270/#comment72157621986549875", comments[0].permalink
     assert_equal "This is a cute cat !", comments[0].to_s
   end
   
@@ -376,29 +387,29 @@ class Basic < Test::Unit::TestCase
   def test_urls_getGroup
     info = flickr.urls.getGroup :group_id => "51035612836@N01"
     assert_equal "51035612836@N01", info.nsid
-    assert_equal "http://www.flickr.com/groups/api/", info.url
+    assert_equal "https://www.flickr.com/groups/api/", info.url
   end
   
   def test_urls_getUserPhotos
     info = flickr.urls.getUserPhotos :user_id => "41650587@N02"
     assert_equal "41650587@N02", info.nsid
-    assert_equal "http://www.flickr.com/photos/41650587@N02/", info.url
+    assert_equal "https://www.flickr.com/photos/41650587@N02/", info.url
   end
   
   def test_urls_getUserProfile
     info = flickr.urls.getUserProfile :user_id => "41650587@N02"
     assert_equal "41650587@N02", info.nsid
-    assert_equal "http://www.flickr.com/people/41650587@N02/", info.url
+    assert_equal "https://www.flickr.com/people/41650587@N02/", info.url
   end
   
   def test_urls_lookupGroup
-    info = flickr.urls.lookupGroup :url => "http://www.flickr.com/groups/api/"
+    info = flickr.urls.lookupGroup :url => "https://www.flickr.com/groups/api/"
     assert_equal "51035612836@N01", info.id
     assert_equal "Flickr API", info.groupname
   end
   
   def test_urls_lookupUser
-    info = flickr.urls.lookupUser :url => "http://www.flickr.com/photos/41650587@N02/"
+    info = flickr.urls.lookupUser :url => "https://www.flickr.com/photos/41650587@N02/"
     assert_equal "41650587@N02", info.id
     assert_equal "ruby_flickraw", info.username
   end
@@ -407,17 +418,21 @@ class Basic < Test::Unit::TestCase
     id = "3839885270"
     info = flickr.photos.getInfo(:photo_id => id)
 
-    assert_equal "http://farm3.static.flickr.com/2485/3839885270_6fb8b54e06.jpg", FlickRaw.url(info)
-    assert_equal "http://farm3.static.flickr.com/2485/3839885270_6fb8b54e06_m.jpg", FlickRaw.url_m(info)
-    assert_equal "http://farm3.static.flickr.com/2485/3839885270_6fb8b54e06_s.jpg", FlickRaw.url_s(info)
-    assert_equal "http://farm3.static.flickr.com/2485/3839885270_6fb8b54e06_t.jpg", FlickRaw.url_t(info)
-    assert_equal "http://farm3.static.flickr.com/2485/3839885270_6fb8b54e06_b.jpg", FlickRaw.url_b(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06.jpg", FlickRaw.url(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_m.jpg", FlickRaw.url_m(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_s.jpg", FlickRaw.url_s(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_t.jpg", FlickRaw.url_t(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_b.jpg", FlickRaw.url_b(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_z.jpg", FlickRaw.url_z(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_q.jpg", FlickRaw.url_q(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_n.jpg", FlickRaw.url_n(info)
+    assert_equal "https://farm3.staticflickr.com/2485/3839885270_6fb8b54e06_c.jpg", FlickRaw.url_c(info)
 
-    assert_equal "http://www.flickr.com/people/41650587@N02/", FlickRaw.url_profile(info)
-    assert_equal "http://www.flickr.com/photos/41650587@N02/", FlickRaw.url_photostream(info)
-    assert_equal "http://www.flickr.com/photos/41650587@N02/3839885270", FlickRaw.url_photopage(info)
-    assert_equal "http://www.flickr.com/photos/41650587@N02/sets/", FlickRaw.url_photosets(info)
-    assert_equal "http://flic.kr/p/6Rjq7s", FlickRaw.url_short(info)
+    assert_equal "https://www.flickr.com/people/41650587@N02/", FlickRaw.url_profile(info)
+    assert_equal "https://www.flickr.com/photos/41650587@N02/", FlickRaw.url_photostream(info)
+    assert_equal "https://www.flickr.com/photos/41650587@N02/3839885270", FlickRaw.url_photopage(info)
+    assert_equal "https://www.flickr.com/photos/41650587@N02/sets/", FlickRaw.url_photosets(info)
+    assert_equal "https://flic.kr/p/6Rjq7s", FlickRaw.url_short(info)
   end
 
   def test_url_escape
