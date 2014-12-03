@@ -189,7 +189,7 @@ module M
 			  end
 		  end
 	  else
-	    output += 'Ancestor or Relative' # TODO more here? -- could be "just relative" since the gedcom parser didn't find it...
+	    output = 'Ancestor or Relative' # TODO more here? -- could be "just relative" since the gedcom parser didn't find it...
 	  end
       new_stats << output
     end
