@@ -137,7 +137,7 @@ module M
         p 'doing flickr', hash
         url = hash[:url]
         new_title = hash[:title]
-        image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace"
+        image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace and birthyear"
 		if new_title =~ /landscape/i # LODO more accuracy
 		  image_title_prefix += " (present day image)"
 		end
