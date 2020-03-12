@@ -12,18 +12,18 @@ class FlickrPhoto
      raise unless place_name
      FlickRaw.api_key="d39c4599580b3886f7828a847020df77"
      FlickRaw.shared_secret="36f9a0945ec82822"
-# require 'ruby-debug'
-
-     new_b = flickr.places.find :query => place_name # totally broken these days LOL
      require 'net/http'
      uri = URI("https://api.opencagedata.com/geocode/v1/json?q=#{place_name}&key=#{File.read 'opencage_key'}")
-     new2 = Net::HTTP.get(uri) rescue nil # fails sometimes? LOL their side though...
-     if new2
-       new3=JSON.parse(new2)
-       latitude = new3["results"].to_a[0]["geometry"]["lat"]
-       longitude = new3["results"].to_a[0]["geometry"]["lng"]
+     new2 = nil
+     while !new2
+       puts 'looking up coords'
+       new2 = Net::HTTP.get(uri) rescue nil # fails sometimes? LOL from their side though...
      end
+     new3=JSON.parse(new2)
+     latitude = new3["results"].to_a[0]["geometry"]["lat"]
+     longitude = new3["results"].to_a[0]["geometry"]["lng"]
       
+     #new_b = flickr.places.find :query => place_name # totally broken these days LOL ???
      #latitude = 10.0#new_b[0]['latitude'].to_f
      #longitude = 10.0# new_b[0]['longitude'].to_f
      #place_id = "a place id" #new_b[0]['place_id']  # unused
@@ -47,7 +47,7 @@ class FlickrPhoto
          want_others = true
        end
     else
-       want_others = true # landscape 1/2 the time
+       want_others = true # landscape 1/2 the time no matter what
     end
 
     if want_others
@@ -63,13 +63,13 @@ class FlickrPhoto
         all = do_flicker_search args
       end
 
-     end
+    end
     
-     outgoing = all.sample # randomize :P
-     #p outgoing
-     as_hash = {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
-     p as_hash
-     as_hash
+    outgoing = all.sample # randomize :P
+    #p outgoing
+    as_hash = {:url => FlickRaw.url(outgoing), :title => title + ' ' + outgoing['title']}
+    p as_hash
+    as_hash
   end
 
   def self.add_bbox_radius radius, to_this_hash, latitude, longitude
