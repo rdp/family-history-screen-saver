@@ -139,7 +139,7 @@ module M
         new_title = hash[:title]
         image_title_prefix = "Photo from near #{ancestor[:name].split.first}'s birthplace and birthyear"
 		if new_title =~ /landscape/i # LODO more accuracy
-		  image_title_prefix += " (present day image)"
+		  image_title_prefix += " (present day)"
 		end
       end
       begin

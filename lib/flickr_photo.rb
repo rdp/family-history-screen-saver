@@ -14,14 +14,15 @@ class FlickrPhoto
      FlickRaw.shared_secret="36f9a0945ec82822"
      require 'net/http'
      uri = URI("https://api.opencagedata.com/geocode/v1/json?q=#{place_name}&key=#{File.read 'opencage_key'}")
-     new2 = nil
-     while !new2
-       puts 'looking up coords'
-       new2 = Net::HTTP.get(uri) rescue nil # fails sometimes? LOL from their side though...
-     end
-     new3=JSON.parse(new2)
-     latitude = new3["results"].to_a[0]["geometry"]["lat"]
-     longitude = new3["results"].to_a[0]["geometry"]["lng"]
+     puts "looking up coords #{uri}"
+     begin
+       new2 = Net::HTTP.get(uri) # fails sometimes? LOL from their side though...
+       new3=JSON.parse(new2)
+       latitude = new3["results"].to_a[0]["geometry"]["lat"]
+       longitude = new3["results"].to_a[0]["geometry"]["lng"]
+     rescue => e
+      puts "opencage failed #{e}"
+    end
       
      #new_b = flickr.places.find :query => place_name # totally broken these days LOL ???
      #latitude = 10.0#new_b[0]['latitude'].to_f
@@ -35,7 +36,9 @@ class FlickrPhoto
          :safe_search => 1, # try to avoid "bad" pictures-- g -rated
          :accuracy => 1 # needed, too, or returns like 0 things
       }
-     add_bbox_radius(2, args, latitude, longitude) 
+     if new2
+       add_bbox_radius(2, args, latitude, longitude) 
+     end # else don't specify any lat
      original_args = args.dup # save them away...
      if rand(2) == 0 && incoming_birth_year # somewhat random...
        args[:min_taken_date] = convert_year_to_timestamp(incoming_birth_year - 10).to_s
