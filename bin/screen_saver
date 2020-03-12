@@ -1,6 +1,9 @@
 puts 'Loading Family Tree Screen Saver...'
 
-for dir in Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib'] do
+libs = Dir[File.dirname(__FILE__) + '/../vendor/gems/**/lib']
+cli = Dir[File.dirname(__FILE__) + '/../vendor/gems/**/cli'] # ruby-debug :|
+
+for dir in (libs + cli) do
   $: << File.expand_path(dir)
 end
 $: << './lib'
