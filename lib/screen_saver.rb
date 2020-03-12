@@ -145,7 +145,7 @@ module M
       begin
 	    download(url, 'temp.jpg')
 	  rescue Exception => e	   
-	    p 'unable to download next image?' + e.to_s
+	    p 'unable to download next image?' + e.to_s + e.backtrace.inspect
 		return # early
 	  end
       @img = java.awt.Toolkit.getDefaultToolkit().createImage("temp.jpg")      
